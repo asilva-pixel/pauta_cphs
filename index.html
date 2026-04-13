@@ -152,7 +152,7 @@ textarea { min-height: 80px; resize: vertical; }
         <span class="toggle-icon" id="icon-asistencia">&#9650;</span>
       </div>
       <div class="section-body" id="asistencia">
-        <div class="attendance-grid">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
           <div class="att-group att-empresa">
             <h3>Representantes Empresa</h3>
             <div id="empresa-list"><p style="font-size:12px;color:#888;font-style:italic;padding:6px">Cargando...</p></div>
@@ -162,6 +162,11 @@ textarea { min-height: 80px; resize: vertical; }
             <h3>Representantes Trabajadores</h3>
             <div id="trabajadores-list"><p style="font-size:12px;color:#888;font-style:italic;padding:6px">Cargando...</p></div>
             <button class="add-btn" onclick="addAttendee('trabajadores')">+ Agregar</button>
+          </div>
+          <div class="att-group" style="border-left:2px solid #e8e6f7;padding-left:16px">
+            <h3 style="color:#7B6FD4;border-bottom:2px solid #e8e6f7">Invitados</h3>
+            <div id="invitados-list"></div>
+            <button class="add-btn" onclick="addInvitado()">+ Agregar invitado</button>
           </div>
         </div>
       </div>
@@ -394,7 +399,32 @@ function renderAttendees(list, cid) {
 
 function markAttendee(id, cls) { document.getElementById(id).className = 'attendee ' + cls; }
 
-function addAttendee(g) {
+function addInvitado() {
+  var n = prompt('Nombre del invitado:'); if (!n) return;
+  var c = prompt('Empresa / Cargo:') || '';
+  var container = document.getElementById('invitados-list');
+  var div = document.createElement('div');
+  div.className = 'attendee present';
+  div.style.background = '#f3f1fd';
+  div.style.borderColor = '#e8e6f7';
+  div.innerHTML = '<div style="flex:1">'
+    + '<div class="attendee-name">' + n + '</div>'
+    + '<div class="attendee-role">' + c + '</div>'
+    + '</div>'
+    + '<button class="del-btn" onclick="this.closest(\'.attendee\').remove()">&#10005;</button>';
+  container.appendChild(div);
+}
+
+function getInvitados() {
+  return Array.from(document.querySelectorAll('#invitados-list .attendee')).map(function(d) {
+    return {
+      nombre: d.querySelector('.attendee-name').textContent,
+      cargo:  d.querySelector('.attendee-role').textContent,
+      grupo:  'invitado',
+      estado: 'Presente'
+    };
+  });
+}
   var n = prompt('Nombre:'); if (!n) return;
   var c = prompt('Cargo:') || '';
   (g==='empresa'?empresa:trabajadores).push({nombre:n,cargo:c,calidad:'',cargoCPHS:'',mail:''});
