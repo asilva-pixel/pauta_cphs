@@ -27,21 +27,21 @@ body { font-family: 'Montserrat', sans-serif; background: #f4f4f6; color: #1B1B1
 .n1{background:#FA345E} .n2{background:#146787} .n3{background:#45C1AD} .n4{background:#B2A8E7} .n5{background:#FA345E} .n6{background:#146787} .nc{background:#999}
 .toggle-icon { color: #999; font-size: 12px; }
 .section-body.collapsed { display: none; }
-.attendance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.attendance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
 .att-group h3 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; padding-bottom: 6px; }
 .att-empresa h3 { color: #146787; border-bottom: 2px solid #c5e8f0; }
 .att-trabajadores h3 { color: #FA345E; border-bottom: 2px solid #ffd6df; }
-.attendee { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-radius: 8px; margin-bottom: 5px; background: #fafafa; border: 1px solid #eee; transition: all 0.2s; }
+.attendee { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-radius: 8px; margin-bottom: 5px; background: #fafafa; border: 1px solid #eee; }
 .attendee-name { font-size: 13px; font-weight: 600; color: #1B1B1B; }
 .attendee-role { font-size: 11px; color: #888; margin-top: 1px; }
 .check-group { display: flex; gap: 10px; }
 .check-group label { font-size: 12px; display: flex; align-items: center; gap: 4px; cursor: pointer; font-weight: 500; color: #555; }
 .check-group input[type="radio"] { accent-color: #FA345E; }
 .present { background: #f0fdf4; border-color: #97E89F; }
-.absent  { background: #fafafa; border-color: #ddd; opacity: 0.65; }
-.badge-titular  { font-size: 10px; font-weight: 700; color: #146787; border: 1px solid #146787; border-radius: 4px; padding: 1px 6px; }
+.absent { background: #fafafa; border-color: #ddd; opacity: 0.65; }
+.badge-titular { font-size: 10px; font-weight: 700; color: #146787; border: 1px solid #146787; border-radius: 4px; padding: 1px 6px; }
 .badge-suplente { font-size: 10px; font-weight: 700; color: #888; border: 1px solid #ccc; border-radius: 4px; padding: 1px 6px; }
-.badge-cargo    { font-size: 10px; font-weight: 700; color: white; background: #FA345E; border-radius: 4px; padding: 1px 6px; }
+.badge-cargo { font-size: 10px; font-weight: 700; color: white; background: #FA345E; border-radius: 4px; padding: 1px 6px; }
 input[type="text"], input[type="date"], input[type="email"], input[type="number"], input[type="time"], select, textarea {
   width: 100%; padding: 9px 13px; border: 1.5px solid #e0e0e0; border-radius: 8px;
   font-family: 'Montserrat', sans-serif; font-size: 13px; transition: all 0.2s; background: white; color: #1B1B1B;
@@ -49,7 +49,7 @@ input[type="text"], input[type="date"], input[type="email"], input[type="number"
 input:focus, select:focus, textarea:focus { outline: none; border-color: #FA345E; box-shadow: 0 0 0 3px rgba(250,52,94,0.1); }
 textarea { min-height: 80px; resize: vertical; }
 .field-label { font-size: 11px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 5px; }
-.add-btn { margin-top: 8px; font-size: 12px; padding: 6px 14px; background: white; border: 1.5px dashed #B2A8E7; color: #7B6FD4; border-radius: 8px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-weight: 600; transition: background 0.2s; }
+.add-btn { margin-top: 8px; font-size: 12px; padding: 6px 14px; background: white; border: 1.5px dashed #B2A8E7; color: #7B6FD4; border-radius: 8px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-weight: 600; }
 .add-btn:hover { background: #f3f1fd; }
 .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
 .data-table thead tr { background: #f0f7fa; }
@@ -81,8 +81,8 @@ textarea { min-height: 80px; resize: vertical; }
 .toast { position: fixed; bottom: 24px; right: 24px; padding: 12px 20px; border-radius: 10px; font-size: 13px; font-weight: 600; z-index: 999; opacity: 0; transition: opacity 0.3s; pointer-events: none; font-family: 'Montserrat', sans-serif; }
 .toast.show { opacity: 1; }
 .toast.success { background: #d7fab6; color: #2d6a2d; border: 1px solid #97E89F; }
-.toast.error   { background: #ffe6e8; color: #721c24; border: 1px solid #FA345E; }
-.toast.info    { background: #e0f4f7; color: #146787; border: 1px solid #45C1AD; }
+.toast.error { background: #ffe6e8; color: #721c24; border: 1px solid #FA345E; }
+.toast.info { background: #e0f4f7; color: #146787; border: 1px solid #45C1AD; }
 @media print {
   .footer, .add-btn, .del-btn, .toggle-icon, .meta-row button { display: none !important; }
   .section-body.collapsed { display: block !important; }
@@ -101,10 +101,10 @@ textarea { min-height: 80px; resize: vertical; }
     <h1>Pauta de Reuni&#243;n — Comit&#233; Paritario</h1>
     <p>Comit&#233; Paritario de Higiene y Seguridad (CPHS)</p>
     <div class="meta-row">
-      <input type="text"  id="numReunion"  placeholder="Reuni&#243;n N&#176;" style="width:110px">
-      <input type="date"  id="fechaReunion">
-      <input type="time"  id="horaReunion">
-      <input type="text"  id="lugarReunion" placeholder="Lugar" style="width:150px">
+      <input type="text" id="numReunion" placeholder="Reuni&#243;n N&#176;" style="width:110px">
+      <input type="date" id="fechaReunion">
+      <input type="time" id="horaReunion">
+      <input type="text" id="lugarReunion" placeholder="Lugar" style="width:150px">
       <button onclick="cargarPendientes()">&#8595; Cargar pendientes</button>
     </div>
   </div>
@@ -118,7 +118,7 @@ textarea { min-height: 80px; resize: vertical; }
         <span class="toggle-icon" id="icon-asistencia">&#9650;</span>
       </div>
       <div class="section-body" id="asistencia">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+        <div class="attendance-grid">
           <div class="att-group att-empresa">
             <h3>Representantes Empresa</h3>
             <div id="empresa-list"><p style="font-size:12px;color:#888;font-style:italic;padding:6px">Cargando...</p></div>
@@ -149,41 +149,24 @@ textarea { min-height: 80px; resize: vertical; }
           <div style="flex:1;min-width:130px"><label class="field-label">N&#176; acta anterior</label><input type="text" id="numActaAnterior" placeholder="004"></div>
           <div style="flex:1;min-width:160px"><label class="field-label">Fecha acta anterior</label><input type="date" id="fechaActaAnterior"></div>
         </div>
-
-        <!-- Temas reunión anterior -->
         <div id="temas-anteriores-box" style="display:none;margin-bottom:16px">
           <label class="field-label" style="color:#146787;margin-bottom:8px">Temas tratados en reuni&#243;n anterior</label>
           <div id="temas-anteriores-list"></div>
         </div>
-
-        <!-- Planes atrasados -->
         <div id="planes-atrasados-box" style="display:none;margin-bottom:16px">
           <label class="field-label" style="color:#FA345E;margin-bottom:8px">Planes de acci&#243;n atrasados o vencidos</label>
-          <table class="data-table" id="planes-atrasados-table">
-            <thead><tr>
-              <th>Descripci&#243;n</th>
-              <th style="width:120px">Responsable</th>
-              <th style="width:105px">Fecha t&#233;rmino</th>
-              <th style="width:90px">Estado</th>
-            </tr></thead>
+          <table class="data-table">
+            <thead><tr><th>Descripci&#243;n</th><th style="width:120px">Responsable</th><th style="width:105px">Fecha t&#233;rmino</th><th style="width:90px">Estado</th></tr></thead>
             <tbody id="planes-atrasados-body"></tbody>
           </table>
         </div>
-
-        <!-- Capacitaciones próximas -->
         <div id="cap-proximas-box" style="display:none;margin-bottom:16px">
           <label class="field-label" style="color:#45C1AD;margin-bottom:8px">Capacitaciones pr&#243;ximas (30 d&#237;as)</label>
-          <table class="data-table" id="cap-proximas-table">
-            <thead><tr>
-              <th>Curso</th>
-              <th style="width:150px">Personal</th>
-              <th style="width:105px">Fecha</th>
-              <th style="width:85px">Estado</th>
-            </tr></thead>
+          <table class="data-table">
+            <thead><tr><th>Curso</th><th style="width:150px">Personal</th><th style="width:105px">Fecha</th><th style="width:85px">Estado</th></tr></thead>
             <tbody id="cap-proximas-body"></tbody>
           </table>
         </div>
-
         <label class="field-label">Observaciones adicionales del acta anterior</label>
         <textarea id="actaTexto" placeholder="Observaciones adicionales sobre la reuni&#243;n anterior..."></textarea>
       </div>
@@ -200,6 +183,8 @@ textarea { min-height: 80px; resize: vertical; }
         <button class="add-btn" onclick="addTema()">+ Agregar tema</button>
       </div>
     </div>
+
+    <!-- 3. PLANES DE ACCIÓN -->
     <div class="section">
       <div class="section-header" onclick="toggleSection('planes')">
         <h2 class="section-title"><span class="num n3">3</span>Planes de acci&#243;n <span class="pendiente-badge" id="planes-badge" style="display:none"></span></h2>
@@ -211,7 +196,7 @@ textarea { min-height: 80px; resize: vertical; }
           <thead><tr>
             <th style="width:28px">#</th>
             <th>Descripci&#243;n</th>
-            <th style="width:115px">Responsable</th>
+            <th style="width:130px">Responsable</th>
             <th style="width:135px">Correo</th>
             <th style="width:105px">Fecha t&#233;rmino</th>
             <th style="width:95px">Estado</th>
@@ -287,7 +272,7 @@ textarea { min-height: 80px; resize: vertical; }
           <p style="font-size:12px;color:#888;margin-bottom:10px;font-style:italic">Nuevos planes definidos en esta reuni&#243;n:</p>
           <table class="data-table">
             <thead><tr>
-              <th>Descripci&#243;n</th><th style="width:115px">Responsable</th>
+              <th>Descripci&#243;n</th><th style="width:130px">Responsable</th>
               <th style="width:135px">Correo</th><th style="width:105px">Fecha t&#233;rmino</th>
               <th style="width:28px"></th>
             </tr></thead>
@@ -326,12 +311,14 @@ textarea { min-height: 80px; resize: vertical; }
     <button class="btn-primary" id="btnGuardar" onclick="guardarReunion()">Guardar en Google Sheets</button>
   </div>
 </div>
-
 <div class="toast" id="toast"></div>
 
 <script>
-var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw0EwMQRv-iQccemMq7aIHMzBNZKkx7I5IlhTy-kD_P1PP3I78zTtnU3TQtELyECE19/exec';
-var WEBHOOK_URL = 'https://n8n.openip.cl/webhook/cphs-guardar';
+// ── URLS ─────────────────────────────────────────────────────
+var SCRIPT_URL  = 'https://script.google.com/macros/s/AKfycbzDb7KzrNqDRjwixpoDTy5k79Nu5ICSvv5WGUXS9EIEWML51EZjGGB50nwXR1Sqcm2MeQ/exec'; // Apps Script — solo para GET (cargar integrantes y pendientes)
+var WEBHOOK_URL = 'https://n8n.openip.cl/webhook/cphs-guardar'; // N8n — para guardar
+
+// ── ESTADO ───────────────────────────────────────────────────
 var empresa = [], trabajadores = [];
 var cursosBase = [
   'Inducción en seguridad y salud ocupacional',
@@ -349,6 +336,7 @@ window.onload = function() {
   cargarIntegrantes();
 };
 
+// ── JSONP (para GET a Apps Script) ───────────────────────────
 function jsonp(url, callback) {
   var name = 'cb_' + Date.now();
   window[name] = function(data) {
@@ -360,18 +348,15 @@ function jsonp(url, callback) {
   var s = document.createElement('script');
   s.id = 'jsonp-script';
   s.src = url + '&callback=' + name;
-  s.onerror = function() {
-    delete window[name];
-    s.remove();
-    callback(null);
-  };
+  s.onerror = function() { delete window[name]; s.remove(); callback(null); };
   document.head.appendChild(s);
 }
 
+// ── INTEGRANTES ──────────────────────────────────────────────
 function cargarIntegrantes() {
   jsonp(SCRIPT_URL + '?action=cargarIntegrantes', function(json) {
     if (!json || !json.ok) {
-      document.getElementById('empresa-list').innerHTML = '<p style="font-size:12px;color:#FA345E;padding:8px">Error al cargar. Verifica la URL del script.</p>';
+      document.getElementById('empresa-list').innerHTML = '<p style="font-size:12px;color:#FA345E;padding:8px">Error al cargar integrantes.</p>';
       document.getElementById('trabajadores-list').innerHTML = '';
       return;
     }
@@ -394,15 +379,12 @@ function renderAttendees(list, cid) {
     d.innerHTML = '<div style="flex:1">'
       + '<div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">'
       + '<span class="attendee-name">' + p.nombre + '</span>'
-      + (p.calidad === 'Titular'  ? '<span class="badge-titular">Titular</span>'   : '')
-      + (p.calidad === 'Suplente' ? '<span class="badge-suplente">Suplente</span>' : '')
+      + (p.calidad==='Titular' ? '<span class="badge-titular">Titular</span>' : p.calidad==='Suplente' ? '<span class="badge-suplente">Suplente</span>' : '')
       + (p.cargoCPHS ? '<span class="badge-cargo">' + p.cargoCPHS + '</span>' : '')
-      + '</div>'
-      + '<div class="attendee-role">' + p.cargo + '</div>'
-      + '</div>'
+      + '</div><div class="attendee-role">' + p.cargo + '</div></div>'
       + '<div class="check-group">'
       + '<label><input type="radio" name="' + cid + i + '" value="Presente" onchange="markAttendee(\'' + cid + i + '\',\'present\')"> Pres.</label>'
-      + '<label><input type="radio" name="' + cid + i + '" value="Ausente"  onchange="markAttendee(\'' + cid + i + '\',\'absent\')">  Ause.</label>'
+      + '<label><input type="radio" name="' + cid + i + '" value="Ausente" onchange="markAttendee(\'' + cid + i + '\',\'absent\')"> Ause.</label>'
       + '</div>';
     c.appendChild(d);
   });
@@ -410,6 +392,60 @@ function renderAttendees(list, cid) {
 
 function markAttendee(id, cls) { document.getElementById(id).className = 'attendee ' + cls; }
 
+function addAttendee(g) {
+  var n = prompt('Nombre:'); if (!n) return;
+  var c = prompt('Cargo:') || '';
+  (g==='empresa'?empresa:trabajadores).push({nombre:n, cargo:c, calidad:'', cargoCPHS:'', mail:''});
+  renderAttendees(g==='empresa'?empresa:trabajadores, g+'-list');
+}
+
+function addInvitado() {
+  var n = prompt('Nombre del invitado:'); if (!n) return;
+  var c = prompt('Empresa / Cargo:') || '';
+  var div = document.createElement('div');
+  div.className = 'attendee';
+  div.style.background = '#f3f1fd'; div.style.borderColor = '#e8e6f7';
+  div.innerHTML = '<div style="flex:1"><div class="attendee-name">' + n + '</div>'
+    + (c ? '<div class="attendee-role"><span style="color:#7B6FD4;font-weight:600">Empresa/Cargo:</span> ' + c + '</div>' : '')
+    + '</div><button class="del-btn" onclick="this.closest(\'.attendee\').remove()">&#10005;</button>';
+  document.getElementById('invitados-list').appendChild(div);
+}
+
+function getAsistencia() {
+  var r = [];
+  ['empresa','trabajadores'].forEach(function(g) {
+    (g==='empresa'?empresa:trabajadores).forEach(function(p, i) {
+      var s = document.querySelector('input[name="' + g + '-list' + i + '"]:checked');
+      r.push({grupo:g, nombre:p.nombre, cargo:p.cargo, mail:p.mail||'', estado:s?s.value:'Sin registrar'});
+    });
+  });
+  return r;
+}
+
+function getInvitados() {
+  var r = [];
+  document.querySelectorAll('#invitados-list .attendee').forEach(function(d) {
+    r.push({grupo:'invitado', nombre:d.querySelector('.attendee-name').textContent, cargo:'', mail:'', estado:'Presente'});
+  });
+  return r;
+}
+
+// ── RESPONSABLE DROPDOWN ─────────────────────────────────────
+function getMiembrosOptions(selectedNombre) {
+  var todos = empresa.concat(trabajadores);
+  var opts = '<option value="">Seleccionar...</option>';
+  todos.forEach(function(p) {
+    opts += '<option value="' + p.nombre + '" data-mail="' + (p.mail||'') + '"' + (p.nombre===selectedNombre?' selected':'') + '>' + p.nombre + '</option>';
+  });
+  return opts;
+}
+
+function onResponsableChange(sel, emailInputId) {
+  var opt = sel.options[sel.selectedIndex];
+  document.getElementById(emailInputId).value = opt ? (opt.getAttribute('data-mail')||'') : '';
+}
+
+// ── TEMAS ────────────────────────────────────────────────────
 function addTema() {
   var titulo = prompt('Título del tema:'); if (!titulo) return;
   var container = document.getElementById('temas-list');
@@ -418,293 +454,227 @@ function addTema() {
   div.style.cssText = 'border:1px solid #e8e6f7;border-radius:10px;margin-bottom:12px;overflow:hidden';
   div.innerHTML = '<div style="background:#f0f7fa;padding:9px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e8e6f7">'
     + '<span style="font-size:13px;font-weight:700;color:#146787">' + idx + '. ' + titulo + '</span>'
-    + '<button class="del-btn" onclick="this.closest(\'div[style]\').remove()">&#10005;</button>'
-    + '</div>'
-    + '<div style="padding:10px 14px">'
-    + '<textarea placeholder="Descripción, acuerdos, observaciones del tema..." style="min-height:70px;font-size:13px"></textarea>'
-    + '</div>';
+    + '<button class="del-btn" onclick="this.closest(\'div[style]\').remove()">&#10005;</button></div>'
+    + '<div style="padding:10px 14px"><textarea placeholder="Descripción, acuerdos, observaciones..." style="min-height:70px;font-size:13px"></textarea></div>';
   container.appendChild(div);
 }
 
 function getTemas() {
-  return Array.from(document.querySelectorAll('#temas-list > div')).map(function(div) {
-    return {
-      titulo: div.querySelector('span').textContent,
-      contenido: div.querySelector('textarea').value
-    };
+  return Array.from(document.querySelectorAll('#temas-list > div')).map(function(d, i) {
+    return { numero: i+1, titulo: d.querySelector('span').textContent, contenido: d.querySelector('textarea').value };
   });
 }
 
-function addInvitado() {
-  var n = prompt('Nombre del invitado:'); if (!n) return;
-  var c = prompt('Empresa / Cargo:') || '';
-  var div = document.createElement('div');
-  div.className = 'attendee';
-  div.style.background = '#f3f1fd';
-  div.style.borderColor = '#e8e6f7';
-  div.innerHTML = '<div style="flex:1">'
-    + '<div class="attendee-name">' + n + '</div>'
-    + (c ? '<div class="attendee-role"><span style="color:#7B6FD4;font-weight:600">Empresa/Cargo:</span> ' + c + '</div>' : '')
-    + '</div>'
-    + '<button class="del-btn" onclick="this.closest(\'.attendee\').remove()">&#10005;</button>';
-  document.getElementById('invitados-list').appendChild(div);
-}
-
-function getInvitados() {
-  var r = [];
-  document.querySelectorAll('#invitados-list .attendee').forEach(function(d) {
-    r.push({
-      grupo: 'invitado',
-      nombre: d.querySelector('.attendee-name').textContent,
-      cargo:  d.querySelector('.attendee-role').textContent,
-      estado: 'Presente'
-    });
-  });
-  return r;
-}
-
-function addAttendee(g) {
-  var n = prompt('Nombre:'); if (!n) return;
-  var c = prompt('Cargo:') || '';
-  (g==='empresa'?empresa:trabajadores).push({nombre:n,cargo:c,calidad:'',cargoCPHS:'',mail:''});
-  renderAttendees(g==='empresa'?empresa:trabajadores, g+'-list');
-}
-
-function getAsistencia() {
-  var r = [];
-  ['empresa','trabajadores'].forEach(function(g) {
-    (g==='empresa'?empresa:trabajadores).forEach(function(p,i){
-      var s = document.querySelector('input[name="'+g+'-list'+i+'"]:checked');
-      r.push({grupo:g,nombre:p.nombre,cargo:p.cargo,estado:s?s.value:'Sin registrar'});
-    });
-  });
-  return r;
-}
-
+// ── PLANES ───────────────────────────────────────────────────
 function addPlan(data) {
   planCount++;
+  var emailId = 'plan-mail-' + planCount;
   var tbody = document.getElementById('planes-body');
   var tr = document.createElement('tr');
-  tr.innerHTML = '<td style="color:#888;font-size:12px">'+planCount+'</td>'
-    +'<td><input type="text" value="'+(data&&data.descripcion?data.descripcion:'')+'" placeholder="Descripción..."></td>'
-    +'<td><input type="text" value="'+(data&&data.responsable?data.responsable:'')+'" placeholder="Responsable"></td>'
-    +'<td><input type="email" value="'+(data&&data.correo?data.correo:'')+'" placeholder="correo@empresa.cl"></td>'
-    +'<td><input type="date" value="'+(data&&data.fechaTermino?data.fechaTermino:'')+'"></td>'
-    +'<td><select onchange="colorSelect(this)">'+['Pendiente','En proceso','Cerrado','Vencido'].map(function(s){return '<option'+(data&&data.estado===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select></td>'
-    +'<td><button class="del-btn" onclick="this.closest(\'tr\').remove()">&#10005;</button></td>';
+  tr.innerHTML = '<td style="color:#888;font-size:12px">' + planCount + '</td>'
+    + '<td><input type="text" value="' + (data&&data.descripcion?data.descripcion:'') + '" placeholder="Descripción..."></td>'
+    + '<td><select onchange="onResponsableChange(this,\'' + emailId + '\')">' + getMiembrosOptions(data&&data.responsable?data.responsable:'') + '</select></td>'
+    + '<td><input type="email" id="' + emailId + '" value="' + (data&&data.correo?data.correo:'') + '" placeholder="correo@empresa.cl" readonly style="background:#f9f9f9;color:#888"></td>'
+    + '<td><input type="date" value="' + (data&&data.fechaTermino?data.fechaTermino:'') + '"></td>'
+    + '<td><select onchange="colorSelect(this)">' + ['Pendiente','En proceso','Cerrado','Vencido'].map(function(s){ return '<option' + (data&&data.estado===s?' selected':'') + '>' + s + '</option>'; }).join('') + '</select></td>'
+    + '<td><button class="del-btn" onclick="this.closest(\'tr\').remove()">&#10005;</button></td>';
   tbody.appendChild(tr);
-  colorSelect(tr.querySelector('select'));
+  colorSelect(tr.querySelectorAll('select')[1]);
 }
 
 function colorSelect(sel) {
-  var v=sel.value;
-  sel.style.background=v==='Cerrado'?'#d7fab6':v==='Vencido'?'#ffe6e8':v==='En proceso'?'#e0f4f7':'#fff';
-  sel.style.color=v==='Cerrado'?'#2d6a2d':v==='Vencido'?'#FA345E':v==='En proceso'?'#146787':'#888';
-  sel.style.fontWeight='600';
+  var v = sel.value;
+  sel.style.background = v==='Cerrado'?'#d7fab6':v==='Vencido'?'#ffe6e8':v==='En proceso'?'#e0f4f7':'#fff';
+  sel.style.color = v==='Cerrado'?'#2d6a2d':v==='Vencido'?'#FA345E':v==='En proceso'?'#146787':'#888';
+  sel.style.fontWeight = '600';
 }
 
 function getPlanes() {
-  return Array.from(document.querySelectorAll('#planes-body tr')).map(function(tr){
-    var i=tr.querySelectorAll('input,select');
-    return {descripcion:i[0].value,responsable:i[1].value,correo:i[2].value,fechaTermino:i[3].value,estado:i[4].value};
+  return Array.from(document.querySelectorAll('#planes-body tr')).map(function(tr) {
+    var inputs = tr.querySelectorAll('input');
+    var selects = tr.querySelectorAll('select');
+    var opt = selects[0].options[selects[0].selectedIndex];
+    return { descripcion:inputs[0].value, responsable:opt?opt.value:'', correo:inputs[1].value, fechaTermino:inputs[2].value, estado:selects[1].value };
   });
 }
 
+// ── INSPECCIONES ─────────────────────────────────────────────
 function addInspeccion(data) {
   inspCount++;
   var tbody = document.getElementById('inspeccion-body');
   var tr = document.createElement('tr');
-  tr.innerHTML = '<td style="color:#888;font-size:12px">'+inspCount+'</td>'
-    +'<td><input type="text" value="'+(data&&data.area?data.area:'')+'" placeholder="Área"></td>'
-    +'<td><input type="text" value="'+(data&&data.condicion?data.condicion:'')+'" placeholder="Descripción..."></td>'
-    +'<td><select>'+['Alto','Medio','Bajo'].map(function(r){return '<option'+(data&&data.riesgo===r?' selected':'')+'>'+r+'</option>';}).join('')+'</select></td>'
-    +'<td><input type="text" value="'+(data&&data.responsable?data.responsable:'')+'" placeholder="Responsable"></td>'
-    +'<td><input type="date" value="'+(data&&data.plazo?data.plazo:'')+'"></td>'
-    +'<td><select>'+['Pendiente','En proceso','Resuelto'].map(function(s){return '<option'+(data&&data.estado===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select></td>'
-    +'<td><button class="del-btn" onclick="this.closest(\'tr\').remove()">&#10005;</button></td>';
+  tr.innerHTML = '<td style="color:#888;font-size:12px">' + inspCount + '</td>'
+    + '<td><input type="text" value="' + (data&&data.area?data.area:'') + '" placeholder="Área"></td>'
+    + '<td><input type="text" value="' + (data&&data.condicion?data.condicion:'') + '" placeholder="Descripción..."></td>'
+    + '<td><select>' + ['Alto','Medio','Bajo'].map(function(r){ return '<option' + (data&&data.riesgo===r?' selected':'') + '>' + r + '</option>'; }).join('') + '</select></td>'
+    + '<td><input type="text" value="' + (data&&data.responsable?data.responsable:'') + '" placeholder="Responsable"></td>'
+    + '<td><input type="date" value="' + (data&&data.plazo?data.plazo:'') + '"></td>'
+    + '<td><select>' + ['Pendiente','En proceso','Resuelto'].map(function(s){ return '<option' + (data&&data.estado===s?' selected':'') + '>' + s + '</option>'; }).join('') + '</select></td>'
+    + '<td><button class="del-btn" onclick="this.closest(\'tr\').remove()">&#10005;</button></td>';
   tbody.appendChild(tr);
 }
 
 function getInspecciones() {
-  return Array.from(document.querySelectorAll('#inspeccion-body tr')).map(function(tr){
-    var i=tr.querySelectorAll('input,select');
-    return {area:i[0].value,condicion:i[1].value,riesgo:i[2].value,responsable:i[3].value,plazo:i[4].value,estado:i[5].value};
+  return Array.from(document.querySelectorAll('#inspeccion-body tr')).map(function(tr) {
+    var i = tr.querySelectorAll('input,select');
+    return { area:i[0].value, condicion:i[1].value, riesgo:i[2].value, responsable:i[3].value, plazo:i[4].value, estado:i[5].value };
   });
 }
 
+// ── CURSOS ───────────────────────────────────────────────────
 function renderCursos() {
-  var c = document.getElementById('cursos-container'); c.innerHTML='';
-  cursosBase.forEach(function(nombre){
-    var div=document.createElement('div'); div.className='curso-card';
-    div.innerHTML='<div class="curso-header"><strong>'+nombre+'</strong>'
-      +'<button class="del-btn" onclick="this.closest(\'.curso-card\').remove()">&#10005;</button></div>'
-      +'<div class="curso-body"><div class="curso-grid">'
-      +'<div><label class="field-label">Personal obligado</label><input type="text" placeholder="Ej: Todo el personal"></div>'
-      +'<div><label class="field-label">Estado</label><select><option>Pendiente</option><option>Programado</option><option>Cumplido</option></select></div>'
-      +'<div><label class="field-label">Fecha programada</label><input type="date"></div>'
-      +'<div><label class="field-label">N° participantes</label><input type="number" placeholder="0" min="0"></div>'
-      +'</div><label class="field-label" style="margin-top:4px">Observaciones</label><input type="text" placeholder="Relator, sala, pendientes..."></div>';
+  var c = document.getElementById('cursos-container'); c.innerHTML = '';
+  cursosBase.forEach(function(nombre) {
+    var div = document.createElement('div'); div.className = 'curso-card';
+    div.innerHTML = '<div class="curso-header"><strong>' + nombre + '</strong>'
+      + '<button class="del-btn" onclick="this.closest(\'.curso-card\').remove()">&#10005;</button></div>'
+      + '<div class="curso-body"><div class="curso-grid">'
+      + '<div><label class="field-label">Personal obligado</label><input type="text" placeholder="Ej: Todo el personal"></div>'
+      + '<div><label class="field-label">Estado</label><select><option>Pendiente</option><option>Programado</option><option>Cumplido</option></select></div>'
+      + '<div><label class="field-label">Fecha programada</label><input type="date"></div>'
+      + '<div><label class="field-label">N° participantes</label><input type="number" placeholder="0" min="0"></div>'
+      + '</div><label class="field-label" style="margin-top:4px">Observaciones</label><input type="text" placeholder="Relator, sala, pendientes..."></div>';
     c.appendChild(div);
   });
 }
 
-function addCurso() {
-  var n=prompt('Nombre del curso:'); if(!n) return;
-  cursosBase.push(n); renderCursos();
-}
+function addCurso() { var n = prompt('Nombre del curso:'); if (!n) return; cursosBase.push(n); renderCursos(); }
 
 function getCursos() {
-  return Array.from(document.querySelectorAll('#cursos-container .curso-card')).map(function(card){
-    var i=card.querySelectorAll('input,select');
-    return {nombre:card.querySelector('strong').textContent,personal:i[0].value,estado:i[1].value,fechaProgramada:i[2].value,nParticipantes:i[3].value,obs:i[4].value};
+  return Array.from(document.querySelectorAll('#cursos-container .curso-card')).map(function(card) {
+    var i = card.querySelectorAll('input,select');
+    return { nombre:card.querySelector('strong').textContent, personal:i[0].value, estado:i[1].value, fechaProgramada:i[2].value, nParticipantes:i[3].value, obs:i[4].value };
   });
 }
 
+// ── ASUNTOS ──────────────────────────────────────────────────
 function addRedefinido() {
-  var tr=document.createElement('tr');
-  tr.innerHTML='<td><input type="text" placeholder="Plan original"></td>'
-    +'<td><input type="text" placeholder="Motivo del atraso"></td>'
-    +'<td><input type="text" placeholder="Responsable"></td>'
-    +'<td><input type="date"></td>'
-    +'<td><button class="del-btn" onclick="this.closest(\'tr\').remove()">&#10005;</button></td>';
+  var tr = document.createElement('tr');
+  tr.innerHTML = '<td><input type="text" placeholder="Plan original"></td>'
+    + '<td><input type="text" placeholder="Motivo del atraso"></td>'
+    + '<td><input type="text" placeholder="Responsable"></td>'
+    + '<td><input type="date"></td>'
+    + '<td><button class="del-btn" onclick="this.closest(\'tr\').remove()">&#10005;</button></td>';
   document.getElementById('redefinidos-body').appendChild(tr);
 }
 
 function addNuevo() {
   var emailId = 'nuevo-mail-' + Date.now();
-  var tr=document.createElement('tr');
-  tr.innerHTML='<td><input type="text" placeholder="Descripción"></td>'
-    +'<td><select onchange="onResponsableChange(this,\''+emailId+'\')">'+getMiembrosOptions('')+'</select></td>'
-    +'<td><input type="email" id="'+emailId+'" placeholder="correo@empresa.cl" readonly style="background:#f9f9f9;color:#888"></td>'
-    +'<td><input type="date"></td>'
-    +'<td><button class="del-btn" onclick="this.closest(\'tr\').remove()">&#10005;</button></td>';
+  var tr = document.createElement('tr');
+  tr.innerHTML = '<td><input type="text" placeholder="Descripción"></td>'
+    + '<td><select onchange="onResponsableChange(this,\'' + emailId + '\')">' + getMiembrosOptions('') + '</select></td>'
+    + '<td><input type="email" id="' + emailId + '" placeholder="correo@empresa.cl" readonly style="background:#f9f9f9;color:#888"></td>'
+    + '<td><input type="date"></td>'
+    + '<td><button class="del-btn" onclick="this.closest(\'tr\').remove()">&#10005;</button></td>';
   document.getElementById('nuevos-body').appendChild(tr);
 }
 
 function getRedefinidos() {
-  return Array.from(document.querySelectorAll('#redefinidos-body tr')).map(function(tr){
-    var i=tr.querySelectorAll('input');
-    return {descripcion:i[0].value,motivo:i[1].value,responsable:i[2].value,nuevaFecha:i[3].value};
+  return Array.from(document.querySelectorAll('#redefinidos-body tr')).map(function(tr) {
+    var i = tr.querySelectorAll('input');
+    return { descripcion:i[0].value, motivo:i[1].value, responsable:i[2].value, nuevaFecha:i[3].value };
   });
 }
 
 function getNuevos() {
-  return Array.from(document.querySelectorAll('#nuevos-body tr')).map(function(tr){
-    var i=tr.querySelectorAll('input');
-    return {descripcion:i[0].value,responsable:i[1].value,correo:i[2].value,fechaTermino:i[3].value};
+  return Array.from(document.querySelectorAll('#nuevos-body tr')).map(function(tr) {
+    var inputs = tr.querySelectorAll('input');
+    var sel = tr.querySelector('select');
+    var opt = sel ? sel.options[sel.selectedIndex] : null;
+    return { descripcion:inputs[0].value, responsable:opt?opt.value:'', correo:inputs[1].value, fechaTermino:inputs[2].value };
   });
 }
 
+// ── CARGAR PENDIENTES ────────────────────────────────────────
 function cargarPendientes() {
   showToast('Cargando pendientes...','info');
   jsonp(SCRIPT_URL + '?action=cargarPendientes', function(json) {
     if (!json || !json.ok) { showToast('Error al cargar pendientes','error'); return; }
     var d = json.data;
-
-    // Planes pendientes sección 3
     if (d.planes && d.planes.length) {
       document.getElementById('planes-body').innerHTML = ''; planCount = 0;
       d.planes.forEach(function(p){ addPlan(p); });
       var b = document.getElementById('planes-badge'); b.textContent = d.planes.length + ' pendientes'; b.style.display = 'inline';
     }
-
-    // Inspecciones sección 4
     if (d.inspecciones && d.inspecciones.length) {
       document.getElementById('inspeccion-body').innerHTML = ''; inspCount = 0;
       d.inspecciones.forEach(function(i){ addInspeccion(i); });
       var b2 = document.getElementById('insp-badge'); b2.textContent = d.inspecciones.length + ' pendientes'; b2.style.display = 'inline';
     }
-
-    // Referencia acta anterior
     if (d.ultimaReunion) {
       document.getElementById('numActaAnterior').value = d.ultimaReunion.num || '';
       if (d.ultimaReunion.fecha) { var f = new Date(d.ultimaReunion.fecha); if (!isNaN(f)) document.getElementById('fechaActaAnterior').valueAsDate = f; }
     }
-
-    // Temas reunión anterior
     if (d.temasAnteriores && d.temasAnteriores.length) {
-      var box = document.getElementById('temas-anteriores-box');
-      var list = document.getElementById('temas-anteriores-list');
-      list.innerHTML = '';
+      var list = document.getElementById('temas-anteriores-list'); list.innerHTML = '';
       d.temasAnteriores.forEach(function(t) {
         var div = document.createElement('div');
         div.style.cssText = 'border:1px solid #c5e8f0;border-radius:8px;margin-bottom:8px;overflow:hidden';
-        div.innerHTML = '<div style="background:#f0f7fa;padding:7px 12px;border-bottom:1px solid #c5e8f0">'
-          + '<span style="font-size:13px;font-weight:700;color:#146787">' + t.numero + '. ' + t.titulo + '</span></div>'
+        div.innerHTML = '<div style="background:#f0f7fa;padding:7px 12px;border-bottom:1px solid #c5e8f0"><span style="font-size:13px;font-weight:700;color:#146787">' + t.numero + '. ' + t.titulo + '</span></div>'
           + (t.contenido ? '<div style="padding:8px 12px;font-size:12px;color:#555">' + t.contenido + '</div>' : '');
         list.appendChild(div);
       });
-      box.style.display = 'block';
+      document.getElementById('temas-anteriores-box').style.display = 'block';
     }
-
-    // Planes atrasados en sección 2
-    var atrasados = (d.planes || []).filter(function(p) {
-      return p.estado === 'Vencido' || p.estado === 'Pendiente' || p.estado === 'En proceso';
-    });
+    var atrasados = (d.planes||[]).filter(function(p){ return p.estado==='Vencido'||p.estado==='Pendiente'||p.estado==='En proceso'; });
     if (atrasados.length) {
-      var tbody = document.getElementById('planes-atrasados-body');
-      tbody.innerHTML = '';
+      var tbody = document.getElementById('planes-atrasados-body'); tbody.innerHTML = '';
       atrasados.forEach(function(p) {
         var tr = document.createElement('tr');
-        var color = p.estado==='Vencido'?'#ffe6e8':p.estado==='En proceso'?'#e0f4f7':'#fff';
-        var tcolor = p.estado==='Vencido'?'#FA345E':p.estado==='En proceso'?'#146787':'#888';
-        tr.innerHTML = '<td style="font-size:13px">' + (p.descripcion||'–') + '</td>'
-          + '<td style="font-size:13px">' + (p.responsable||'–') + '</td>'
-          + '<td style="font-size:13px">' + (p.fechaTermino||'–') + '</td>'
-          + '<td><span style="background:'+color+';color:'+tcolor+';font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px">' + (p.estado||'–') + '</span></td>';
+        var bg = p.estado==='Vencido'?'#ffe6e8':p.estado==='En proceso'?'#e0f4f7':'#fff';
+        var tc = p.estado==='Vencido'?'#FA345E':p.estado==='En proceso'?'#146787':'#888';
+        tr.innerHTML = '<td>' + (p.descripcion||'–') + '</td><td>' + (p.responsable||'–') + '</td><td>' + (p.fechaTermino||'–') + '</td>'
+          + '<td><span style="background:' + bg + ';color:' + tc + ';font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px">' + (p.estado||'–') + '</span></td>';
         tbody.appendChild(tr);
       });
       document.getElementById('planes-atrasados-box').style.display = 'block';
     }
-
-    // Capacitaciones próximas
     if (d.capacitacionesProximas && d.capacitacionesProximas.length) {
-      var tbody2 = document.getElementById('cap-proximas-body');
-      tbody2.innerHTML = '';
+      var tbody2 = document.getElementById('cap-proximas-body'); tbody2.innerHTML = '';
       d.capacitacionesProximas.forEach(function(c) {
         var tr = document.createElement('tr');
-        tr.innerHTML = '<td style="font-size:13px">' + (c.curso||'–') + '</td>'
-          + '<td style="font-size:12px">' + (c.personal||'–') + '</td>'
-          + '<td style="font-size:13px">' + (c.fechaProgramada||'–') + '</td>'
+        tr.innerHTML = '<td>' + (c.curso||'–') + '</td><td>' + (c.personal||'–') + '</td><td>' + (c.fechaProgramada||'–') + '</td>'
           + '<td><span style="background:#e0f4f7;color:#146787;font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px">' + (c.estado||'–') + '</span></td>';
         tbody2.appendChild(tr);
       });
       document.getElementById('cap-proximas-box').style.display = 'block';
     }
-
-    showToast('Pendientes cargados correctamente', 'success');
+    showToast('Pendientes cargados correctamente','success');
   });
 }
 
-async function guardarReunion() {
+// ── GUARDAR (N8N) ─────────────────────────────────────────────
+function guardarReunion() {
   var btn = document.getElementById('btnGuardar');
   btn.disabled = true; btn.textContent = 'Guardando...';
   var payload = {
-    fecha:            document.getElementById('fechaReunion').value,
-    numReunion:       document.getElementById('numReunion').value,
-    hora:             document.getElementById('horaReunion').value,
-    lugar:            document.getElementById('lugarReunion').value,
-    numActaAnterior:  document.getElementById('numActaAnterior').value,
-    fechaActaAnterior:document.getElementById('fechaActaAnterior').value,
-    resumenActa:      document.getElementById('actaTexto').value,
-    observaciones:    document.getElementById('observaciones').value,
-    temas:            getTemas(),
-    asistencia:       getAsistencia().concat(getInvitados()),
-    planes:           getPlanes(),
-    inspecciones:     getInspecciones(),
-    cursos:           getCursos(),
-    redefinidos:      getRedefinidos(),
-    nuevosPlanes:     getNuevos()
+    fecha:             document.getElementById('fechaReunion').value,
+    numReunion:        document.getElementById('numReunion').value,
+    hora:              document.getElementById('horaReunion').value,
+    lugar:             document.getElementById('lugarReunion').value,
+    numActaAnterior:   document.getElementById('numActaAnterior').value,
+    fechaActaAnterior: document.getElementById('fechaActaAnterior').value,
+    resumenActa:       document.getElementById('actaTexto').value,
+    observaciones:     document.getElementById('observaciones').value,
+    temas:             getTemas(),
+    asistencia:        getAsistencia().concat(getInvitados()),
+    planes:            getPlanes(),
+    inspecciones:      getInspecciones(),
+    cursos:            getCursos(),
+    redefinidos:       getRedefinidos(),
+    nuevosPlanes:      getNuevos()
   };
-  try {
-    var res = await fetch(SCRIPT_URL, {method:'POST', body: JSON.stringify({action:'guardarReunion', payload:payload})});
-    var json = await res.json();
-    if (json.ok) { showToast('¡Reunión guardada! Acta enviada por correo. ID: ' + json.reunionId, 'success'); }
-    else throw new Error(json.msg || 'Error');
-  } catch(e) { showToast('Error: ' + e.message, 'error'); }
-  finally { btn.disabled = false; btn.textContent = 'Guardar en Google Sheets'; }
+  fetch(WEBHOOK_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  }).then(function(res) { return res.json(); })
+  .then(function() { showToast('¡Reunión guardada correctamente!', 'success'); })
+  .catch(function(e) { showToast('Error al guardar: ' + e.message, 'error'); })
+  .finally(function() { btn.disabled = false; btn.textContent = 'Guardar en Google Sheets'; });
 }
 
+// ── DATOS DE PRUEBA ───────────────────────────────────────────
 function llenarPrueba() {
   document.getElementById('numReunion').value = '001';
   document.getElementById('horaReunion').value = '10:00';
@@ -712,49 +682,42 @@ function llenarPrueba() {
   document.getElementById('numActaAnterior').value = '000';
   document.getElementById('actaTexto').value = 'Reunión de constitución del comité.';
   document.getElementById('observaciones').value = 'Prueba de sistema.';
-
-  // Marcar asistencia
-  empresa.forEach(function(_,i){ var r=document.querySelector('input[name="empresa-list'+i+'"][value="Presente"]'); if(r) { r.checked=true; markAttendee('empresa-list'+i,'present'); }});
-  trabajadores.forEach(function(_,i){ var r=document.querySelector('input[name="trabajadores-list'+i+'"][value="Presente"]'); if(r) { r.checked=true; markAttendee('trabajadores-list'+i,'present'); }});
-
-  // Tema de prueba
-  document.getElementById('temas-list').innerHTML='';
-  var div=document.createElement('div');div.style.cssText='border:1px solid #e8e6f7;border-radius:10px;margin-bottom:12px;overflow:hidden';
-  div.innerHTML='<div style="background:#f0f7fa;padding:9px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e8e6f7"><span style="font-size:13px;font-weight:700;color:#146787">1. Tema de prueba</span><button class="del-btn" onclick="this.closest(\'div[style]\').remove()">&#10005;</button></div><div style="padding:10px 14px"><textarea style="min-height:70px;font-size:13px">Contenido del tema de prueba para verificar el sistema.</textarea></div>';
+  empresa.forEach(function(_,i){ var r=document.querySelector('input[name="empresa-list'+i+'"][value="Presente"]'); if(r){r.checked=true;markAttendee('empresa-list'+i,'present');}});
+  trabajadores.forEach(function(_,i){ var r=document.querySelector('input[name="trabajadores-list'+i+'"][value="Presente"]'); if(r){r.checked=true;markAttendee('trabajadores-list'+i,'present');}});
+  document.getElementById('temas-list').innerHTML = '';
+  var div = document.createElement('div'); div.style.cssText='border:1px solid #e8e6f7;border-radius:10px;margin-bottom:12px;overflow:hidden';
+  div.innerHTML='<div style="background:#f0f7fa;padding:9px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e8e6f7"><span style="font-size:13px;font-weight:700;color:#146787">1. Tema de prueba</span><button class="del-btn" onclick="this.closest(\'div[style]\').remove()">&#10005;</button></div><div style="padding:10px 14px"><textarea style="min-height:70px;font-size:13px">Contenido del tema de prueba.</textarea></div>';
   document.getElementById('temas-list').appendChild(div);
-
-  // Plan de prueba
-  document.getElementById('planes-body').innerHTML=''; planCount=0;
+  document.getElementById('planes-body').innerHTML = ''; planCount = 0;
   addPlan({descripcion:'Plan de prueba',responsable:'Ana Maria Silva',correo:'asilva@apprecio.com',fechaTermino:'2026-05-30',estado:'Pendiente'});
-
   showToast('Datos de prueba cargados','success');
 }
 
+// ── EXPORTAR PDF ──────────────────────────────────────────────
 function exportarPDF() {
-  var s = document.createElement('style'); s.id = 'pdf-print';
-  s.textContent = '@media print{.footer,.add-btn,.del-btn,.toggle-icon,.meta-row button{display:none!important}.section-body.collapsed{display:block!important}body{background:white!important;padding:0}.container{box-shadow:none!important;border-radius:0}}';
+  var s = document.createElement('style'); s.id='pdf-print';
+  s.textContent='@media print{.footer,.add-btn,.del-btn,.toggle-icon,.meta-row button{display:none!important}.section-body.collapsed{display:block!important}body{background:white!important;padding:0}.container{box-shadow:none!important;border-radius:0}}';
   document.head.appendChild(s);
   window.print();
-  setTimeout(function(){ var el = document.getElementById('pdf-print'); if(el) el.remove(); }, 1500);
+  setTimeout(function(){ var el=document.getElementById('pdf-print'); if(el)el.remove(); },1500);
 }
 
+// ── HELPERS ───────────────────────────────────────────────────
 function toggleSection(id) {
-  var b = document.getElementById(id), ic = document.getElementById('icon-' + id);
+  var b=document.getElementById(id), ic=document.getElementById('icon-'+id);
   b.classList.toggle('collapsed');
-  ic.textContent = b.classList.contains('collapsed') ? '▼' : '▲';
+  ic.textContent=b.classList.contains('collapsed')?'▼':'▲';
 }
-
-function switchTab(tab, el) {
-  document.getElementById('tab-redefinidos').style.display = tab==='redefinidos' ? 'block' : 'none';
-  document.getElementById('tab-nuevos').style.display      = tab==='nuevos'      ? 'block' : 'none';
-  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+function switchTab(tab,el) {
+  document.getElementById('tab-redefinidos').style.display=tab==='redefinidos'?'block':'none';
+  document.getElementById('tab-nuevos').style.display=tab==='nuevos'?'block':'none';
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
   el.classList.add('active');
 }
-
-function showToast(msg, type) {
-  var t = document.getElementById('toast');
-  t.textContent = msg; t.className = 'toast show ' + (type||'');
-  setTimeout(function(){ t.className = 'toast'; }, 3500);
+function showToast(msg,type) {
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast show '+(type||'');
+  setTimeout(function(){t.className='toast';},3500);
 }
 </script>
 </body>
