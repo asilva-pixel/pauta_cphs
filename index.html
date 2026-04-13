@@ -331,8 +331,7 @@ textarea { min-height: 80px; resize: vertical; }
 
 <script>
 var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw0EwMQRv-iQccemMq7aIHMzBNZKkx7I5IlhTy-kD_P1PP3I78zTtnU3TQtELyECE19/exec';
-var WEBHOOK_URL = 'https://n8n.openip.cl/webhook-test/cphs-guardar';
-
+var WEBHOOK_URL = 'https://n8n.openip.cl/webhook/cphs-guardar';
 var empresa = [], trabajadores = [];
 var cursosBase = [
   'Inducción en seguridad y salud ocupacional',
@@ -498,10 +497,10 @@ function addPlan(data) {
 }
 
 function colorSelect(sel) {
-  var v = sel.value;
-  sel.style.background = v==='Cerrado'?'#d7fab6':v==='Vencido'?'#ffe6e8':v==='En proceso'?'#e0f4f7':'#fff';
-  sel.style.color      = v==='Cerrado'?'#2d6a2d':v==='Vencido'?'#FA345E':v==='En proceso'?'#146787':'#888';
-  sel.style.fontWeight = '600';
+  var v=sel.value;
+  sel.style.background=v==='Cerrado'?'#d7fab6':v==='Vencido'?'#ffe6e8':v==='En proceso'?'#e0f4f7':'#fff';
+  sel.style.color=v==='Cerrado'?'#2d6a2d':v==='Vencido'?'#FA345E':v==='En proceso'?'#146787':'#888';
+  sel.style.fontWeight='600';
 }
 
 function getPlanes() {
@@ -572,10 +571,11 @@ function addRedefinido() {
 }
 
 function addNuevo() {
+  var emailId = 'nuevo-mail-' + Date.now();
   var tr=document.createElement('tr');
   tr.innerHTML='<td><input type="text" placeholder="Descripción"></td>'
-    +'<td><input type="text" placeholder="Responsable"></td>'
-    +'<td><input type="email" placeholder="correo@empresa.cl"></td>'
+    +'<td><select onchange="onResponsableChange(this,\''+emailId+'\')">'+getMiembrosOptions('')+'</select></td>'
+    +'<td><input type="email" id="'+emailId+'" placeholder="correo@empresa.cl" readonly style="background:#f9f9f9;color:#888"></td>'
     +'<td><input type="date"></td>'
     +'<td><button class="del-btn" onclick="this.closest(\'tr\').remove()">&#10005;</button></td>';
   document.getElementById('nuevos-body').appendChild(tr);
