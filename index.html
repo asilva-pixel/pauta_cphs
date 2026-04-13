@@ -287,24 +287,23 @@ textarea { min-height: 80px; resize: vertical; }
       </div>
     </div>
 
-    <!-- FIRMAS -->
+    <!-- CIERRE -->
     <div class="section">
       <div class="section-header" onclick="toggleSection('firmas')">
-        <h2 class="section-title"><span class="section-number" style="background:#999">&#9998;</span>Observaciones y firmas</h2>
+        <h2 class="section-title"><span class="section-number" style="background:#999">&#9998;</span>Observaciones y cierre</h2>
         <span class="toggle-icon" id="icon-firmas">&#9650;</span>
       </div>
       <div class="section-body" id="firmas">
         <label style="font-size:11px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Observaciones generales</label>
-        <textarea id="observaciones" placeholder="Observaciones generales de la reuni&#243;n..." style="margin-bottom:24px"></textarea>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:10px">
-          <div style="border-top:2px solid #ffd6df;padding-top:8px;text-align:center">
-            <div style="font-size:13px;font-weight:700;color:#fa345e">Presidente CPHS</div>
-            <div style="font-size:11px;color:#999;margin-top:2px">Nombre y firma</div>
-          </div>
-          <div style="border-top:2px solid #ffd6df;padding-top:8px;text-align:center">
-            <div style="font-size:13px;font-weight:700;color:#fa345e">Secretario CPHS</div>
-            <div style="font-size:11px;color:#999;margin-top:2px">Nombre y firma</div>
-          </div>
+        <textarea id="observaciones" placeholder="Observaciones generales de la reuni&#243;n..." style="margin-bottom:20px"></textarea>
+        <div style="background:#fff0f3;border-left:3px solid #fa345e;border-radius:0 8px 8px 0;padding:16px 20px;font-size:13px;line-height:1.8;color:#555">
+          <span id="frase-cierre">
+            <strong style="color:#fa345e">Presidente:</strong> <span id="nombre-presidente" style="font-weight:600">–</span>
+            &nbsp;&nbsp;|&nbsp;&nbsp;
+            <strong style="color:#fa345e">Secretaria/o:</strong> <span id="nombre-secretaria" style="font-weight:600">–</span>
+            <br>
+            <span style="font-size:12px;color:#888;font-style:italic">dan fe de que la presente sesi&#243;n del Comit&#233; Paritario de Higiene y Seguridad se llev&#243; a cabo en la fecha indicada y que la informaci&#243;n contenida en este documento corresponde fielmente a lo tratado.</span>
+          </span>
         </div>
       </div>
     </div>
@@ -313,7 +312,7 @@ textarea { min-height: 80px; resize: vertical; }
 
   <div class="footer">
     <span style="font-size:11px;color:#999;margin-right:auto">Datos guardados en Google Sheets</span>
-    <button class="btn-secondary" onclick="window.print()">Imprimir / PDF</button>
+    <button class="btn-secondary" onclick="exportarPDF()">&#8595; Exportar PDF</button>
     <button class="btn-primary" id="btnGuardar" onclick="guardarReunion()">Guardar en Google Sheets</button>
   </div>
 </div>
@@ -330,16 +329,8 @@ function saveConfig() {
   showToast('URL guardada correctamente', 'success');
 }
 
-var empresa = [
-  {nombre:'Juan González', cargo:'Gerente de Operaciones'},
-  {nombre:'María López', cargo:'Jefe de Prevención'},
-  {nombre:'Carlos Muñoz', cargo:'Supervisor Producción'}
-];
-var trabajadores = [
-  {nombre:'Pedro Soto', cargo:'Operario — Delegado'},
-  {nombre:'Ana Martínez', cargo:'Técnico — Delegada'},
-  {nombre:'Luis Fernández', cargo:'Bodeguero — Delegado'}
-];
+var empresa = [];
+var trabajadores = [];
 var cursosBase = [
   'Inducción en seguridad y salud ocupacional',
   'Uso y mantención de EPP',
@@ -353,16 +344,60 @@ var planCount = 0, inspCount = 0;
 window.onload = function() {
   if (SCRIPT_URL) { document.getElementById('scriptUrl').value = SCRIPT_URL; document.getElementById('configStatus').textContent = '✓ Configurado'; }
   document.getElementById('fechaReunion').valueAsDate = new Date();
-  renderAttendees(empresa, 'empresa-list');
-  renderAttendees(trabajadores, 'trabajadores-list');
   renderCursos();
+  if (SCRIPT_URL) { cargarIntegrantes(); } 
+  else {
+    empresa = [{nombre:'(configura URL para cargar)',cargo:''}];
+    trabajadores = [{nombre:'(configura URL para cargar)',cargo:''}];
+    renderAttendees(empresa,'empresa-list');
+    renderAttendees(trabajadores,'trabajadores-list');
+  }
 };
+
+async function cargarIntegrantes() {
+  try {
+    var res = await fetch(SCRIPT_URL+'?action=cargarIntegrantes');
+    var json = await res.json();
+    if (!json.ok) throw new Error('No se pudo cargar integrantes');
+    empresa = json.empresa || [];
+    trabajadores = json.trabajadores || [];
+    renderAttendees(empresa, 'empresa-list');
+    renderAttendees(trabajadores, 'trabajadores-list');
+    // Poblar presidente y secretaria en frase de cierre
+    var presidente = empresa.concat(trabajadores).find(function(p){ return p.cargoCPHS === 'Presidente'; });
+    var secretaria = empresa.concat(trabajadores).find(function(p){ return p.cargoCPHS === 'Secretaria'; });
+    if (presidente) document.getElementById('nombre-presidente').textContent = presidente.nombre;
+    if (secretaria) document.getElementById('nombre-secretaria').textContent = secretaria.nombre;
+  } catch(err) {
+    showToast('No se pudieron cargar los integrantes desde Sheets', 'error');
+  }
+}
+
+function exportarPDF() {
+  // Abrir diálogo de impresión del navegador configurado para guardar como PDF
+  var style = document.createElement('style');
+  style.id = 'print-override';
+  style.textContent = '@media print { .config-bar, .footer, .add-btn, .del-btn, .toggle-icon { display: none !important; } .section-body.collapsed { display: block !important; } body { background: white !important; } .container { box-shadow: none !important; } }';
+  document.head.appendChild(style);
+  window.print();
+  setTimeout(function(){ var s = document.getElementById('print-override'); if(s) s.remove(); }, 1000);
+}
 
 function renderAttendees(list, cid) {
   var c = document.getElementById(cid); c.innerHTML = '';
   list.forEach(function(p, i) {
+    var calidad = p.calidad || '';
+    var cargoCPHS = p.cargoCPHS || '';
+    var calidadColor = calidad === 'Titular' ? '#fa345e' : '#999';
     var d = document.createElement('div'); d.className = 'attendee'; d.id = cid + i;
-    d.innerHTML = '<div><div class="attendee-name">'+p.nombre+'</div><div class="attendee-role">'+p.cargo+'</div></div>'
+    d.innerHTML = '<div style="flex:1">'
+      +'<div style="display:flex;align-items:center;gap:6px">'
+      +'<div class="attendee-name">'+p.nombre+'</div>'
+      +(calidad?'<span style="font-size:10px;font-weight:700;color:'+calidadColor+';border:1px solid '+calidadColor+';border-radius:4px;padding:1px 6px">'+calidad+'</span>':'')
+      +(cargoCPHS?'<span style="font-size:10px;font-weight:700;color:#fff;background:#fa345e;border-radius:4px;padding:1px 6px">'+cargoCPHS+'</span>':'')
+      +'</div>'
+      +'<div class="attendee-role">'+p.cargo+(p.mail?' · <span style="color:#fa345e">'+p.mail+'</span>':'')+'</div>'
+      +'</div>'
       +'<div class="check-group">'
       +'<label><input type="radio" name="'+cid+i+'" value="Presente" onchange="markAttendee(\''+cid+i+'\',\'present\')"> Pres.</label>'
       +'<label><input type="radio" name="'+cid+i+'" value="Ausente" onchange="markAttendee(\''+cid+i+'\',\'absent\')"> Ause.</label>'
