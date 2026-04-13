@@ -373,7 +373,7 @@ function addInvitado() {
   div.style.borderColor = '#e8e6f7';
   div.innerHTML = '<div style="flex:1">'
     + '<div class="attendee-name">' + n + '</div>'
-    + '<div class="attendee-role">' + c + '</div>'
+    + (c ? '<div class="attendee-role"><span style="color:#7B6FD4;font-weight:600">Empresa/Cargo:</span> ' + c + '</div>' : '')
     + '</div>'
     + '<button class="del-btn" onclick="this.closest(\'.attendee\').remove()">&#10005;</button>';
   document.getElementById('invitados-list').appendChild(div);
