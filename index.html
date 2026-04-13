@@ -321,6 +321,7 @@ textarea { min-height: 80px; resize: vertical; }
 
   <div class="footer">
     <span style="font-size:11px;color:#aaa;margin-right:auto">Datos guardados en Google Sheets</span>
+    <button class="btn-secondary" onclick="llenarPrueba()" style="border-color:#B2A8E7;color:#7B6FD4">&#9699; Datos de prueba</button>
     <button class="btn-secondary" onclick="exportarPDF()">&#8595; Exportar PDF</button>
     <button class="btn-primary" id="btnGuardar" onclick="guardarReunion()">Guardar en Google Sheets</button>
   </div>
@@ -702,6 +703,31 @@ async function guardarReunion() {
     else throw new Error(json.msg || 'Error');
   } catch(e) { showToast('Error: ' + e.message, 'error'); }
   finally { btn.disabled = false; btn.textContent = 'Guardar en Google Sheets'; }
+}
+
+function llenarPrueba() {
+  document.getElementById('numReunion').value = '001';
+  document.getElementById('horaReunion').value = '10:00';
+  document.getElementById('lugarReunion').value = 'Sala de reuniones';
+  document.getElementById('numActaAnterior').value = '000';
+  document.getElementById('actaTexto').value = 'Reunión de constitución del comité.';
+  document.getElementById('observaciones').value = 'Prueba de sistema.';
+
+  // Marcar asistencia
+  empresa.forEach(function(_,i){ var r=document.querySelector('input[name="empresa-list'+i+'"][value="Presente"]'); if(r) { r.checked=true; markAttendee('empresa-list'+i,'present'); }});
+  trabajadores.forEach(function(_,i){ var r=document.querySelector('input[name="trabajadores-list'+i+'"][value="Presente"]'); if(r) { r.checked=true; markAttendee('trabajadores-list'+i,'present'); }});
+
+  // Tema de prueba
+  document.getElementById('temas-list').innerHTML='';
+  var div=document.createElement('div');div.style.cssText='border:1px solid #e8e6f7;border-radius:10px;margin-bottom:12px;overflow:hidden';
+  div.innerHTML='<div style="background:#f0f7fa;padding:9px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e8e6f7"><span style="font-size:13px;font-weight:700;color:#146787">1. Tema de prueba</span><button class="del-btn" onclick="this.closest(\'div[style]\').remove()">&#10005;</button></div><div style="padding:10px 14px"><textarea style="min-height:70px;font-size:13px">Contenido del tema de prueba para verificar el sistema.</textarea></div>';
+  document.getElementById('temas-list').appendChild(div);
+
+  // Plan de prueba
+  document.getElementById('planes-body').innerHTML=''; planCount=0;
+  addPlan({descripcion:'Plan de prueba',responsable:'Ana Maria Silva',correo:'asilva@apprecio.com',fechaTermino:'2026-05-30',estado:'Pendiente'});
+
+  showToast('Datos de prueba cargados','success');
 }
 
 function exportarPDF() {
