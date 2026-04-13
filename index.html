@@ -1,352 +1,603 @@
-// ============================================================
-//  CPHS — Google Apps Script Backend
-//  Pega este código en Apps Script y despliega como Web App
-// ============================================================
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pauta CPHS — Apprecio</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Montserrat', sans-serif; background: #f4f4f6; color: #1B1B1B; line-height: 1.6; padding: 20px; }
+.container { max-width: 900px; margin: 0 auto; background: white; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); overflow: hidden; }
 
-const SHEET_ID = 'REEMPLAZA_CON_TU_SPREADSHEET_ID'; // ← ver instrucciones
+/* HEADER */
+.header { background: linear-gradient(135deg, #FA345E 0%, #B2A8E7 100%); color: white; padding: 40px 30px; text-align: center; }
+.header h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+.header p { font-size: 13px; opacity: 0.9; }
+.meta-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 18px; }
+.meta-row input { background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.4); color: white; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-family: 'Montserrat', sans-serif; }
+.meta-row input::placeholder { color: rgba(255,255,255,0.65); }
+.meta-row button { background: rgba(255,255,255,0.22); border: 1px solid rgba(255,255,255,0.45); color: white; padding: 6px 16px; border-radius: 8px; font-size: 13px; font-family: 'Montserrat', sans-serif; cursor: pointer; font-weight: 600; transition: background 0.2s; }
+.meta-row button:hover { background: rgba(255,255,255,0.32); }
 
-// ------------------------------------------------------------
-//  CORS + Router principal
-// ------------------------------------------------------------
-function doPost(e) {
-  const data = JSON.parse(e.postData.contents);
-  let result;
-  switch (data.action) {
-    case 'guardarReunion':   result = guardarReunion(data.payload);   break;
-    case 'cargarPendientes': result = cargarPendientes();             break;
-    default: result = { ok: false, msg: 'Acción desconocida' };
-  }
-  return ContentService
-    .createTextOutput(JSON.stringify(result))
-    .setMimeType(ContentService.MimeType.JSON);
+/* FORM */
+.form-content { padding: 10px 30px 30px; }
+
+/* SECTIONS */
+.section { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid #eee; }
+.section:last-child { border-bottom: none; }
+.section-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; margin-bottom: 14px; padding: 10px 14px; border-radius: 10px; transition: background 0.2s; }
+.section-header:hover { background: #fdf0f3; }
+.section-title { font-size: 16px; font-weight: 700; color: #1B1B1B; display: flex; align-items: center; gap: 10px; }
+.num { width: 32px; height: 32px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; color: white; }
+.n1 { background: #FA345E; }
+.n2 { background: #146787; }
+.n3 { background: #45C1AD; }
+.n4 { background: #B2A8E7; }
+.n5 { background: #FA345E; }
+.n6 { background: #146787; }
+.nc { background: #999; }
+.toggle-icon { color: #999; font-size: 12px; }
+.section-body.collapsed { display: none; }
+
+/* ATTENDANCE */
+.attendance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.att-group h3 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; padding-bottom: 6px; }
+.att-empresa h3 { color: #146787; border-bottom: 2px solid #c5e8f0; }
+.att-trabajadores h3 { color: #FA345E; border-bottom: 2px solid #ffd6df; }
+.attendee { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-radius: 8px; margin-bottom: 5px; background: #fafafa; border: 1px solid #eee; transition: all 0.2s; }
+.attendee-name { font-size: 13px; font-weight: 600; color: #1B1B1B; }
+.attendee-role { font-size: 11px; color: #888; margin-top: 1px; }
+.check-group { display: flex; gap: 10px; }
+.check-group label { font-size: 12px; display: flex; align-items: center; gap: 4px; cursor: pointer; font-weight: 500; color: #555; }
+.check-group input[type="radio"] { accent-color: #FA345E; }
+.present { background: #f0fdf4; border-color: #97E89F; }
+.absent  { background: #fafafa; border-color: #ddd; opacity: 0.65; }
+.badge-titular  { font-size: 10px; font-weight: 700; color: #146787; border: 1px solid #146787; border-radius: 4px; padding: 1px 6px; }
+.badge-suplente { font-size: 10px; font-weight: 700; color: #888; border: 1px solid #ccc; border-radius: 4px; padding: 1px 6px; }
+.badge-cargo    { font-size: 10px; font-weight: 700; color: white; background: #FA345E; border-radius: 4px; padding: 1px 6px; }
+
+/* INPUTS */
+input[type="text"], input[type="date"], input[type="email"], input[type="number"], input[type="time"], select, textarea {
+  width: 100%; padding: 9px 13px; border: 1.5px solid #e0e0e0; border-radius: 8px;
+  font-family: 'Montserrat', sans-serif; font-size: 13px; transition: all 0.2s; background: white; color: #1B1B1B;
 }
+input:focus, select:focus, textarea:focus { outline: none; border-color: #FA345E; box-shadow: 0 0 0 3px rgba(250,52,94,0.1); }
+textarea { min-height: 80px; resize: vertical; }
+.field-label { font-size: 11px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 5px; }
+.add-btn { margin-top: 8px; font-size: 12px; padding: 6px 14px; background: white; border: 1.5px dashed #B2A8E7; color: #7B6FD4; border-radius: 8px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-weight: 600; transition: background 0.2s; }
+.add-btn:hover { background: #f3f1fd; }
 
-function doGet(e) {
-  const action = e.parameter.action;
-  const callback = e.parameter.callback;
-  let result;
-  if (action === 'cargarPendientes')       result = cargarPendientes();
-  else if (action === 'cargarIntegrantes') result = cargarIntegrantes();
-  else result = { ok: false, msg: 'Acción desconocida' };
+/* TABLES */
+.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.data-table thead tr { background: #f0f7fa; }
+.data-table th { font-size: 11px; font-weight: 700; color: #146787; text-transform: uppercase; letter-spacing: 0.5px; padding: 9px 10px; text-align: left; border-bottom: 2px solid #c5e8f0; }
+.data-table td { padding: 7px 8px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table input, .data-table select { border: 1px solid #e0e0e0; padding: 4px 7px; font-size: 12px; border-radius: 6px; }
+.del-btn { background: none; border: none; color: #FA345E; cursor: pointer; font-size: 14px; padding: 2px 5px; opacity: 0.6; }
+.del-btn:hover { opacity: 1; }
 
-  const json = JSON.stringify(result);
-  const output = callback
-    ? ContentService.createTextOutput(callback + '(' + json + ')').setMimeType(ContentService.MimeType.JAVASCRIPT)
-    : ContentService.createTextOutput(json).setMimeType(ContentService.MimeType.JSON);
-  return output;
+/* BADGES */
+.pendiente-badge { background: #fff0f3; color: #FA345E; font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 700; margin-left: 8px; border: 1px solid #ffd6df; }
+
+/* CURSOS */
+.curso-card { border: 1px solid #e8e6f7; border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
+.curso-header { background: #f3f1fd; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e8e6f7; }
+.curso-header strong { font-size: 13px; color: #7B6FD4; font-weight: 600; }
+.curso-body { padding: 12px 16px; }
+.curso-body .field-label { color: #888; }
+.curso-body input, .curso-body select { margin-bottom: 10px; font-size: 12px; padding: 6px 10px; }
+.curso-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+/* TABS */
+.asuntos-tabs { display: flex; margin-bottom: 16px; border-bottom: 2px solid #e8e6f7; }
+.tab { padding: 7px 18px; font-size: 13px; cursor: pointer; border: none; border-radius: 8px 8px 0 0; color: #888; font-weight: 600; font-family: 'Montserrat', sans-serif; background: none; transition: all 0.2s; margin-right: 4px; }
+.tab:hover { color: #7B6FD4; background: #f3f1fd; }
+.tab.active { background: linear-gradient(135deg,#B2A8E7,#7B6FD4); color: white; }
+
+/* NOTE */
+.reminder-note { font-size: 12px; color: #146787; background: #f0f7fa; border-left: 3px solid #45C1AD; padding: 8px 12px; border-radius: 0 8px 8px 0; margin-bottom: 12px; font-style: italic; }
+
+/* CIERRE */
+.cierre-box { background: linear-gradient(135deg, #f0f7fa, #f3f1fd); border-radius: 10px; padding: 18px 20px; font-size: 13px; line-height: 1.9; color: #444; border: 1px solid #e8e6f7; }
+
+/* FOOTER */
+.footer { background: #fafafa; padding: 18px 30px; display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; align-items: center; border-top: 1px solid #eee; }
+.btn-primary { background: linear-gradient(135deg,#FA345E,#ff5a7a); color: white; border: none; padding: 11px 26px; border-radius: 30px; font-size: 14px; font-family: 'Montserrat', sans-serif; cursor: pointer; font-weight: 700; box-shadow: 0 4px 14px rgba(250,52,94,0.25); transition: all 0.25s; }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(250,52,94,0.35); }
+.btn-primary:disabled { background: #ccc; box-shadow: none; transform: none; cursor: not-allowed; }
+.btn-secondary { background: white; color: #146787; border: 1.5px solid #146787; padding: 10px 22px; border-radius: 30px; font-size: 14px; font-family: 'Montserrat', sans-serif; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+.btn-secondary:hover { background: #f0f7fa; }
+
+/* TOAST */
+.toast { position: fixed; bottom: 24px; right: 24px; padding: 12px 20px; border-radius: 10px; font-size: 13px; font-weight: 600; z-index: 999; opacity: 0; transition: opacity 0.3s; pointer-events: none; font-family: 'Montserrat', sans-serif; }
+.toast.show { opacity: 1; }
+.toast.success { background: #d7fab6; color: #2d6a2d; border: 1px solid #97E89F; }
+.toast.error   { background: #ffe6e8; color: #721c24; border: 1px solid #FA345E; }
+.toast.info    { background: #e0f4f7; color: #146787; border: 1px solid #45C1AD; }
+
+@media print {
+  .footer, .add-btn, .del-btn, .toggle-icon, .meta-row button { display: none !important; }
+  .section-body.collapsed { display: block !important; }
+  body { background: white !important; padding: 0; }
+  .container { box-shadow: none !important; border-radius: 0; }
 }
+</style>
+</head>
+<body>
+<div class="container">
 
-// ------------------------------------------------------------
-//  1. Guardar reunión completa
-// ------------------------------------------------------------
-function guardarReunion(payload) {
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-  const ts = new Date().toISOString();
-
-  // --- Hoja: Reuniones ---
-  const shReuniones = getOrCreate(ss, 'Reuniones',
-    ['ID','Fecha','N°Reunión','Hora','Lugar','Timestamp']);
-  const reunionId = 'RN-' + Utilities.formatDate(new Date(), 'America/Santiago', 'yyyyMMdd-HHmmss');
-  shReuniones.appendRow([reunionId, payload.fecha, payload.numReunion,
-                         payload.hora, payload.lugar, ts]);
-
-  // --- Hoja: Asistencia ---
-  const shAsist = getOrCreate(ss, 'Asistencia',
-    ['ReunionID','Fecha','Grupo','Nombre','Cargo','Estado']);
-  (payload.asistencia || []).forEach(a =>
-    shAsist.appendRow([reunionId, payload.fecha, a.grupo, a.nombre, a.cargo, a.estado]));
-
-  // --- Hoja: PlanesAccion ---
-  const shPlanes = getOrCreate(ss, 'PlanesAccion',
-    ['ReunionID','Fecha','Descripcion','Responsable','Correo','FechaTermino','Estado','Origen']);
-  (payload.planes || []).forEach(p =>
-    shPlanes.appendRow([reunionId, payload.fecha, p.descripcion, p.responsable,
-                        p.correo, p.fechaTermino, p.estado, 'reunion']));
-  (payload.nuevosPlanes || []).forEach(p =>
-    shPlanes.appendRow([reunionId, payload.fecha, p.descripcion, p.responsable,
-                        p.correo, p.fechaTermino, 'Pendiente', 'nuevo']));
-  (payload.redefinidos || []).forEach(p =>
-    shPlanes.appendRow([reunionId, payload.fecha, p.descripcion + ' [REDEFINIDO: ' + p.motivo + ']',
-                        p.responsable, '', p.nuevaFecha, 'Redefinido', 'redefinido']));
-
-  // --- Hoja: Inspecciones ---
-  const shInsp = getOrCreate(ss, 'Inspecciones',
-    ['ReunionID','Fecha','Area','Condicion','Riesgo','Responsable','Plazo','Estado']);
-  (payload.inspecciones || []).forEach(i =>
-    shInsp.appendRow([reunionId, payload.fecha, i.area, i.condicion,
-                      i.riesgo, i.responsable, i.plazo, i.estado]));
-
-  // --- Hoja: Capacitacion ---
-  const shCap = getOrCreate(ss, 'Capacitacion',
-    ['ReunionID','Fecha','Curso','PersonalObligado','Estado','FechaProgramada','NParticipantes','Obs']);
-  (payload.cursos || []).forEach(c =>
-    shCap.appendRow([reunionId, payload.fecha, c.nombre, c.personal,
-                     c.estado, c.fechaProgramada, c.nParticipantes, c.obs]));
-
-  // --- Hoja: ActaAnterior ---
-  const shActa = getOrCreate(ss, 'ActaAnterior',
-    ['ReunionID','Fecha','NumActaAnterior','FechaActaAnterior','Resumen']);
-  shActa.appendRow([reunionId, payload.fecha, payload.numActaAnterior,
-                    payload.fechaActaAnterior, payload.resumenActa]);
-
-  // Enviar acta por correo a todos los integrantes
-  enviarActaPorCorreo(payload, reunionId);
-
-  return { ok: true, reunionId };
-}
-
-// ------------------------------------------------------------
-//  Enviar acta por correo a todos los integrantes
-// ------------------------------------------------------------
-function enviarActaPorCorreo(payload, reunionId) {
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-  const sh = ss.getSheetByName('Integrantes');
-  if (!sh || sh.getLastRow() < 2) return;
-
-  // Recopilar destinatarios
-  const rows = sh.getRange(2, 1, sh.getLastRow()-1, 6).getValues();
-  const destinatarios = rows
-    .map(r => r[2])
-    .filter(mail => mail && mail.toString().includes('@'));
-
-  if (!destinatarios.length) return;
-
-  const fecha = payload.fecha ? Utilities.formatDate(new Date(payload.fecha), 'America/Santiago', 'dd/MM/yyyy') : '';
-  const asunto = `[CPHS Apprecio] Acta Reunión N°${payload.numReunion || '–'} — ${fecha}`;
-
-  // Construir HTML del acta
-  const html = buildActaHTML(payload, reunionId, fecha);
-
-  destinatarios.forEach(mail => {
-    try {
-      GmailApp.sendEmail(mail, asunto, '', { htmlBody: html, name: 'Comité Paritario Apprecio' });
-    } catch(err) {
-      Logger.log('Error enviando a ' + mail + ': ' + err);
-    }
-  });
-}
-
-// ------------------------------------------------------------
-//  Construir HTML del acta
-// ------------------------------------------------------------
-function buildActaHTML(p, reunionId, fecha) {
-  const red = '#fa345e';
-
-  // Asistencia
-  const asistencia = (p.asistencia || []);
-  const empresa = asistencia.filter(a => a.grupo === 'empresa');
-  const trabajadores = asistencia.filter(a => a.grupo === 'trabajadores');
-
-  function filaPersona(a) {
-    const color = a.estado === 'Presente' ? '#d4edda' : '#f8f8f8';
-    const txt = a.estado === 'Presente' ? '#155724' : '#999';
-    return `<tr style="background:${color}">
-      <td style="padding:6px 10px;font-size:13px">${a.nombre}</td>
-      <td style="padding:6px 10px;font-size:12px;color:#666">${a.cargo}</td>
-      <td style="padding:6px 10px;font-size:12px;font-weight:700;color:${txt}">${a.estado}</td>
-    </tr>`;
-  }
-
-  // Planes
-  const planes = (p.planes || []).concat(p.nuevosPlanes || []);
-  const filasPlanes = planes.length ? planes.map(pl => `
-    <tr>
-      <td style="padding:6px 10px;font-size:13px">${pl.descripcion||'–'}</td>
-      <td style="padding:6px 10px;font-size:13px">${pl.responsable||'–'}</td>
-      <td style="padding:6px 10px;font-size:13px">${pl.fechaTermino||'–'}</td>
-      <td style="padding:6px 10px;font-size:12px;font-weight:700;color:${pl.estado==='Cerrado'?'#155724':pl.estado==='Vencido'?'#721c24':'#856404'}">${pl.estado||'–'}</td>
-    </tr>`).join('') : '<tr><td colspan="4" style="padding:10px;color:#999;font-size:13px">Sin planes registrados</td></tr>';
-
-  // Inspecciones
-  const inspecciones = p.inspecciones || [];
-  const filasInsp = inspecciones.length ? inspecciones.map(i => `
-    <tr>
-      <td style="padding:6px 10px;font-size:13px">${i.area||'–'}</td>
-      <td style="padding:6px 10px;font-size:13px">${i.condicion||'–'}</td>
-      <td style="padding:6px 10px;font-size:12px;font-weight:700;color:${i.riesgo==='Alto'?'#721c24':i.riesgo==='Medio'?'#856404':'#155724'}">${i.riesgo||'–'}</td>
-      <td style="padding:6px 10px;font-size:13px">${i.responsable||'–'}</td>
-      <td style="padding:6px 10px;font-size:13px">${i.plazo||'–'}</td>
-    </tr>`).join('') : '<tr><td colspan="5" style="padding:10px;color:#999;font-size:13px">Sin condiciones registradas</td></tr>';
-
-  return `<!DOCTYPE html><html><head><meta charset="UTF-8">
-  <style>
-    body{font-family:'Montserrat',Arial,sans-serif;background:#f9f9f9;padding:20px;color:#333}
-    .wrap{max-width:700px;margin:0 auto;background:white;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1)}
-    .hdr{background:linear-gradient(135deg,#fa345e,#ff5a7a);color:white;padding:30px;text-align:center}
-    .hdr h1{font-size:22px;font-weight:700;margin:0}
-    .hdr p{font-size:13px;opacity:.9;margin-top:6px}
-    .body{padding:24px}
-    h2{color:${red};font-size:15px;font-weight:700;margin:20px 0 10px;padding-bottom:6px;border-bottom:2px solid #ffd6df}
-    table{width:100%;border-collapse:collapse;margin-bottom:8px}
-    th{background:#fff0f3;color:${red};font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:8px 10px;text-align:left;border-bottom:2px solid #ffd6df}
-    .footer{background:#f9f9f9;padding:16px 24px;text-align:center;font-size:11px;color:#999;border-top:1px solid #f0f0f0}
-  </style></head><body>
-  <div class="wrap">
-    <div class="hdr">
-      <svg viewBox="0 0 420 100" xmlns="http://www.w3.org/2000/svg" style="max-width:160px;display:block;margin:0 auto 12px">
-        <text x="210" y="73" text-anchor="middle" font-family="Montserrat,Arial,sans-serif" font-weight="700" font-size="52" fill="white" letter-spacing="-1">apprecio</text>
-      </svg>
-      <h1>Acta Reuni&#243;n CPHS N&#176;${p.numReunion||'–'}</h1>
-      <p>${fecha} &nbsp;·&nbsp; ${p.hora||''} &nbsp;·&nbsp; ${p.lugar||''}</p>
+  <div class="header">
+    <svg viewBox="0 0 420 100" xmlns="http://www.w3.org/2000/svg" style="max-width:200px;display:block;margin:0 auto 14px">
+      <text x="210" y="73" text-anchor="middle" font-family="'Montserrat',Arial,sans-serif" font-weight="700" font-size="52" fill="white" letter-spacing="-1">apprecio</text>
+    </svg>
+    <h1>Pauta de Reuni&#243;n — Comit&#233; Paritario</h1>
+    <p>Comit&#233; Paritario de Higiene y Seguridad (CPHS)</p>
+    <div class="meta-row">
+      <input type="text"  id="numReunion"  placeholder="Reuni&#243;n N&#176;" style="width:110px">
+      <input type="date"  id="fechaReunion">
+      <input type="time"  id="horaReunion">
+      <input type="text"  id="lugarReunion" placeholder="Lugar" style="width:150px">
+      <button onclick="cargarPendientes()">&#8595; Cargar pendientes</button>
     </div>
-    <div class="body">
-
-      ${p.resumenActa ? `<h2>Acta anterior</h2><p style="font-size:13px;background:#fff0f3;padding:10px;border-radius:6px;border-left:3px solid ${red}">${p.resumenActa}</p>` : ''}
-
-      <h2>1. Asistencia — Empresa</h2>
-      <table><thead><tr><th>Nombre</th><th>Cargo</th><th>Estado</th></tr></thead>
-      <tbody>${empresa.map(filaPersona).join('')}</tbody></table>
-
-      <h2>1. Asistencia — Trabajadores</h2>
-      <table><thead><tr><th>Nombre</th><th>Cargo</th><th>Estado</th></tr></thead>
-      <tbody>${trabajadores.map(filaPersona).join('')}</tbody></table>
-
-      <h2>3. Planes de acci&#243;n</h2>
-      <table><thead><tr><th>Descripci&#243;n</th><th>Responsable</th><th>Fecha t&#233;rmino</th><th>Estado</th></tr></thead>
-      <tbody>${filasPlanes}</tbody></table>
-
-      <h2>4. Inspecci&#243;n de seguridad</h2>
-      <table><thead><tr><th>&#193;rea</th><th>Condici&#243;n</th><th>Riesgo</th><th>Responsable</th><th>Plazo</th></tr></thead>
-      <tbody>${filasInsp}</tbody></table>
-
-      ${p.observaciones ? `<h2>Observaciones</h2><p style="font-size:13px">${p.observaciones}</p>` : ''}
-
-      <p style="font-size:11px;color:#999;margin-top:20px">ID Reuni&#243;n: ${reunionId}</p>
-    </div>
-    <div class="footer">Este correo fue generado autom&#225;ticamente por el sistema CPHS Apprecio.</div>
   </div>
-  </body></html>`;
+
+  <div class="form-content">
+
+    <!-- 1. ASISTENCIA -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection('asistencia')">
+        <h2 class="section-title"><span class="num n1">1</span>Asistencia de representantes</h2>
+        <span class="toggle-icon" id="icon-asistencia">&#9650;</span>
+      </div>
+      <div class="section-body" id="asistencia">
+        <div class="attendance-grid">
+          <div class="att-group att-empresa">
+            <h3>Representantes Empresa</h3>
+            <div id="empresa-list"><p style="font-size:12px;color:#888;font-style:italic;padding:6px">Cargando...</p></div>
+            <button class="add-btn" onclick="addAttendee('empresa')">+ Agregar</button>
+          </div>
+          <div class="att-group att-trabajadores">
+            <h3>Representantes Trabajadores</h3>
+            <div id="trabajadores-list"><p style="font-size:12px;color:#888;font-style:italic;padding:6px">Cargando...</p></div>
+            <button class="add-btn" onclick="addAttendee('trabajadores')">+ Agregar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. ACTA ANTERIOR -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection('acta')">
+        <h2 class="section-title"><span class="num n2">2</span>Revisi&#243;n del acta anterior</h2>
+        <span class="toggle-icon" id="icon-acta">&#9650;</span>
+      </div>
+      <div class="section-body" id="acta">
+        <div style="display:flex;gap:14px;margin-bottom:14px;flex-wrap:wrap">
+          <div style="flex:1;min-width:130px"><label class="field-label">N&#176; acta anterior</label><input type="text" id="numActaAnterior" placeholder="004"></div>
+          <div style="flex:1;min-width:160px"><label class="field-label">Fecha acta anterior</label><input type="date" id="fechaActaAnterior"></div>
+        </div>
+        <label class="field-label">Resumen puntos tratados</label>
+        <textarea id="actaTexto" placeholder="Resumen de los puntos abordados en la reuni&#243;n anterior y estado de sus compromisos..."></textarea>
+      </div>
+    </div>
+
+    <!-- 3. PLANES DE ACCIÓN -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection('planes')">
+        <h2 class="section-title"><span class="num n3">3</span>Planes de acci&#243;n <span class="pendiente-badge" id="planes-badge" style="display:none"></span></h2>
+        <span class="toggle-icon" id="icon-planes">&#9650;</span>
+      </div>
+      <div class="section-body" id="planes">
+        <div class="reminder-note">&#9993; Correo autom&#225;tico al responsable 3 d&#237;as, 1 d&#237;a antes del vencimiento y el d&#237;a de t&#233;rmino.</div>
+        <table class="data-table">
+          <thead><tr>
+            <th style="width:28px">#</th>
+            <th>Descripci&#243;n</th>
+            <th style="width:115px">Responsable</th>
+            <th style="width:135px">Correo</th>
+            <th style="width:105px">Fecha t&#233;rmino</th>
+            <th style="width:95px">Estado</th>
+            <th style="width:28px"></th>
+          </tr></thead>
+          <tbody id="planes-body"></tbody>
+        </table>
+        <button class="add-btn" style="margin-top:10px" onclick="addPlan()">+ Agregar plan de acci&#243;n</button>
+      </div>
+    </div>
+
+    <!-- 4. INSPECCIÓN -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection('inspeccion')">
+        <h2 class="section-title"><span class="num n4">4</span>Inspecci&#243;n de seguridad <span class="pendiente-badge" id="insp-badge" style="display:none"></span></h2>
+        <span class="toggle-icon" id="icon-inspeccion">&#9650;</span>
+      </div>
+      <div class="section-body" id="inspeccion">
+        <table class="data-table">
+          <thead><tr>
+            <th style="width:28px">#</th>
+            <th>&#193;rea / Ubicaci&#243;n</th>
+            <th>Condici&#243;n insegura</th>
+            <th style="width:72px">Riesgo</th>
+            <th style="width:115px">Responsable</th>
+            <th style="width:100px">Plazo</th>
+            <th style="width:82px">Estado</th>
+            <th style="width:28px"></th>
+          </tr></thead>
+          <tbody id="inspeccion-body"></tbody>
+        </table>
+        <button class="add-btn" style="margin-top:10px" onclick="addInspeccion()">+ Agregar condici&#243;n insegura</button>
+      </div>
+    </div>
+
+    <!-- 5. CAPACITACIÓN -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection('capacitacion')">
+        <h2 class="section-title"><span class="num n5">5</span>Programa de capacitaci&#243;n</h2>
+        <span class="toggle-icon" id="icon-capacitacion">&#9650;</span>
+      </div>
+      <div class="section-body" id="capacitacion">
+        <p style="font-size:12px;color:#888;margin-bottom:14px;font-style:italic">Cursos obligatorios seg&#250;n DS 40 / Ley 16.744</p>
+        <div id="cursos-container"></div>
+        <button class="add-btn" onclick="addCurso()">+ Agregar curso</button>
+      </div>
+    </div>
+
+    <!-- 6. ASUNTOS -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection('asuntos')">
+        <h2 class="section-title"><span class="num n6">6</span>Asuntos pendientes y nuevos</h2>
+        <span class="toggle-icon" id="icon-asuntos">&#9650;</span>
+      </div>
+      <div class="section-body" id="asuntos">
+        <div class="asuntos-tabs">
+          <button class="tab active" onclick="switchTab('redefinidos',this)">Planes redefinidos</button>
+          <button class="tab" onclick="switchTab('nuevos',this)">Nuevos planes de acci&#243;n</button>
+        </div>
+        <div id="tab-redefinidos">
+          <p style="font-size:12px;color:#888;margin-bottom:10px;font-style:italic">Planes no resueltos en la fecha comprometida:</p>
+          <table class="data-table">
+            <thead><tr>
+              <th>Plan original</th><th>Motivo del atraso</th>
+              <th style="width:115px">Responsable</th><th style="width:105px">Nueva fecha</th>
+              <th style="width:28px"></th>
+            </tr></thead>
+            <tbody id="redefinidos-body"></tbody>
+          </table>
+          <button class="add-btn" style="margin-top:8px" onclick="addRedefinido()">+ Agregar plan redefinido</button>
+        </div>
+        <div id="tab-nuevos" style="display:none">
+          <p style="font-size:12px;color:#888;margin-bottom:10px;font-style:italic">Nuevos planes definidos en esta reuni&#243;n:</p>
+          <table class="data-table">
+            <thead><tr>
+              <th>Descripci&#243;n</th><th style="width:115px">Responsable</th>
+              <th style="width:135px">Correo</th><th style="width:105px">Fecha t&#233;rmino</th>
+              <th style="width:28px"></th>
+            </tr></thead>
+            <tbody id="nuevos-body"></tbody>
+          </table>
+          <button class="add-btn" style="margin-top:8px" onclick="addNuevo()">+ Agregar nuevo plan</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CIERRE -->
+    <div class="section">
+      <div class="section-header" onclick="toggleSection('firmas')">
+        <h2 class="section-title"><span class="num nc">&#9998;</span>Observaciones y cierre</h2>
+        <span class="toggle-icon" id="icon-firmas">&#9650;</span>
+      </div>
+      <div class="section-body" id="firmas">
+        <label class="field-label">Observaciones generales</label>
+        <textarea id="observaciones" placeholder="Observaciones generales de la reuni&#243;n..." style="margin-bottom:18px"></textarea>
+        <div class="cierre-box">
+          <strong style="color:#FA345E">Presidente:</strong> <span id="nombre-presidente" style="font-weight:600">–</span>
+          &nbsp;&nbsp;|&nbsp;&nbsp;
+          <strong style="color:#146787">Secretaria/o:</strong> <span id="nombre-secretaria" style="font-weight:600">–</span>
+          <br>
+          <span style="font-size:12px;color:#666;font-style:italic">dan fe de que la presente sesi&#243;n del Comit&#233; Paritario de Higiene y Seguridad se llev&#243; a cabo en la fecha indicada y que la informaci&#243;n contenida en este documento corresponde fielmente a lo tratado.</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <span style="font-size:11px;color:#aaa;margin-right:auto">Datos guardados en Google Sheets</span>
+    <button class="btn-secondary" onclick="exportarPDF()">&#8595; Exportar PDF</button>
+    <button class="btn-primary" id="btnGuardar" onclick="guardarReunion()">Guardar en Google Sheets</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── REEMPLAZA CON TU URL ──────────────────────────────────
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwrRwNrGZCD-LTWPXTidIkr3ouzB0RASpI8dwJKJ0s_WBwmXt2NF0EPBQsQ_S9NE1SoxQ/exec';
+// ──────────────────────────────────────────────────────────
+
+var empresa = [], trabajadores = [];
+var cursosBase = [
+  'Inducción en seguridad y salud ocupacional',
+  'Uso y mantención de EPP',
+  'Manejo seguro de materiales peligrosos',
+  'Primeros auxilios básicos',
+  'Prevención y combate de incendios',
+  'Ergonomía y manejo de cargas'
+];
+var planCount = 0, inspCount = 0;
+
+window.onload = function() {
+  document.getElementById('fechaReunion').valueAsDate = new Date();
+  renderCursos();
+  cargarIntegrantes();
+};
+
+function jsonp(url, callback) {
+  var name = 'cb_' + Date.now();
+  window[name] = function(data) {
+    delete window[name];
+    document.getElementById('jsonp-script') && document.getElementById('jsonp-script').remove();
+    callback(data);
+  };
+  var s = document.createElement('script');
+  s.id = 'jsonp-script';
+  s.src = url + '&callback=' + name;
+  s.onerror = function() {
+    delete window[name];
+    s.remove();
+    callback(null);
+  };
+  document.head.appendChild(s);
 }
 
-// ------------------------------------------------------------
-//  2. Cargar integrantes desde hoja "Integrantes"
-// ------------------------------------------------------------
 function cargarIntegrantes() {
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-  const sh = ss.getSheetByName('Integrantes');
-  if (!sh || sh.getLastRow() < 2) return { ok: true, empresa: [], trabajadores: [] };
-
-  const rows = sh.getRange(2, 1, sh.getLastRow()-1, 6).getValues();
-  const empresa = [], trabajadores = [];
-  rows.forEach(r => {
-    const nombre = r[0], cargo = r[1], mail = r[2],
-          grupo = (r[3]||'').toString().trim().toLowerCase(),
-          calidad = r[4], cargoCPHS = r[5];
-    if (!nombre) return;
-    const obj = { nombre, cargo, mail, calidad, cargoCPHS };
-    if (grupo === 'empresa') empresa.push(obj);
-    else if (grupo === 'trabajadores') trabajadores.push(obj);
-  });
-  return { ok: true, empresa, trabajadores };
-}
-
-// ------------------------------------------------------------
-//  3. Cargar datos pendientes para próxima reunión
-// ------------------------------------------------------------
-function cargarPendientes() {
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-  const result = { planes: [], inspecciones: [], ultimaReunion: null };
-
-  // Planes no cerrados
-  const shPlanes = ss.getSheetByName('PlanesAccion');
-  if (shPlanes && shPlanes.getLastRow() > 1) {
-    const rows = shPlanes.getRange(2, 1, shPlanes.getLastRow()-1, 8).getValues();
-    rows.forEach(r => {
-      if (r[6] !== 'Cerrado' && r[6] !== 'cerrado') {
-        result.planes.push({
-          reunionId: r[0], fecha: r[1], descripcion: r[2],
-          responsable: r[3], correo: r[4], fechaTermino: r[5], estado: r[6]
-        });
-      }
-    });
-  }
-
-  // Inspecciones no resueltas
-  const shInsp = ss.getSheetByName('Inspecciones');
-  if (shInsp && shInsp.getLastRow() > 1) {
-    const rows = shInsp.getRange(2, 1, shInsp.getLastRow()-1, 8).getValues();
-    rows.forEach(r => {
-      if (r[7] !== 'Resuelto') {
-        result.inspecciones.push({
-          area: r[2], condicion: r[3], riesgo: r[4],
-          responsable: r[5], plazo: r[6], estado: r[7]
-        });
-      }
-    });
-  }
-
-  // Última reunión (para referencia en acta anterior)
-  const shRn = ss.getSheetByName('Reuniones');
-  if (shRn && shRn.getLastRow() > 1) {
-    const last = shRn.getRange(shRn.getLastRow(), 1, 1, 6).getValues()[0];
-    result.ultimaReunion = { id: last[0], fecha: last[1], num: last[2] };
-  }
-
-  return { ok: true, data: result };
-}
-
-// ------------------------------------------------------------
-//  3. Trigger diario — recordatorios por correo
-//     Configura esto en: Triggers > recordatoriosDiarios > Time-driven > Day timer
-// ------------------------------------------------------------
-function recordatoriosDiarios() {
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-  const sh = ss.getSheetByName('PlanesAccion');
-  if (!sh || sh.getLastRow() < 2) return;
-
-  const hoy = new Date(); hoy.setHours(0,0,0,0);
-  const rows = sh.getRange(2, 1, sh.getLastRow()-1, 8).getValues();
-
-  rows.forEach((r, i) => {
-    const estado = r[6];
-    if (estado === 'Cerrado' || estado === 'cerrado') return;
-
-    const correo = r[4];
-    if (!correo || !correo.includes('@')) return;
-
-    const fechaTermino = new Date(r[5]); fechaTermino.setHours(0,0,0,0);
-    const diasRestantes = Math.round((fechaTermino - hoy) / 86400000);
-
-    if (diasRestantes === 3 || diasRestantes === 1 || diasRestantes === 0) {
-      const descripcion = r[2] || '(sin descripción)';
-      const responsable = r[3] || 'Responsable';
-      const alerta = diasRestantes === 0 ? '¡VENCE HOY!'
-                   : diasRestantes === 1 ? 'Vence mañana'
-                   : 'Vence en 3 días';
-
-      const asunto = `[CPHS] ${alerta} — Plan de acción: ${descripcion.substring(0,50)}`;
-      const cuerpo = `Estimado/a ${responsable},\n\n` +
-        `Este es un recordatorio automático del Comité Paritario de Higiene y Seguridad (CPHS).\n\n` +
-        `Tienes un plan de acción próximo a vencer:\n\n` +
-        `  Descripción : ${descripcion}\n` +
-        `  Fecha límite: ${Utilities.formatDate(fechaTermino, 'America/Santiago', 'dd/MM/yyyy')}\n` +
-        `  Estado actual: ${estado}\n\n` +
-        `Por favor actualiza el estado del plan o contacta al coordinador del CPHS.\n\n` +
-        `Saludos,\nComité Paritario de Higiene y Seguridad`;
-
-      try {
-        GmailApp.sendEmail(correo, asunto, cuerpo);
-        Logger.log('Correo enviado a ' + correo + ' — ' + alerta);
-        // Marcar en sheet que se envió recordatorio
-        sh.getRange(i+2, 8).setNote('Recordatorio enviado: ' + new Date().toLocaleDateString());
-      } catch(err) {
-        Logger.log('Error enviando a ' + correo + ': ' + err);
-      }
+  jsonp(SCRIPT_URL + '?action=cargarIntegrantes', function(json) {
+    if (!json || !json.ok) {
+      document.getElementById('empresa-list').innerHTML = '<p style="font-size:12px;color:#FA345E;padding:8px">Error al cargar. Verifica la URL del script.</p>';
+      document.getElementById('trabajadores-list').innerHTML = '';
+      return;
     }
+    empresa = json.empresa || [];
+    trabajadores = json.trabajadores || [];
+    renderAttendees(empresa, 'empresa-list');
+    renderAttendees(trabajadores, 'trabajadores-list');
+    var todos = empresa.concat(trabajadores);
+    var pres = todos.find(function(p){ return p.cargoCPHS === 'Presidente'; });
+    var sec  = todos.find(function(p){ return p.cargoCPHS === 'Secretaria'; });
+    if (pres) document.getElementById('nombre-presidente').textContent = pres.nombre;
+    if (sec)  document.getElementById('nombre-secretaria').textContent = sec.nombre;
   });
 }
 
-// ------------------------------------------------------------
-//  Utilidad: obtener o crear hoja con encabezados
-// ------------------------------------------------------------
-function getOrCreate(ss, name, headers) {
-  let sh = ss.getSheetByName(name);
-  if (!sh) {
-    sh = ss.insertSheet(name);
-    sh.appendRow(headers);
-    sh.getRange(1, 1, 1, headers.length).setFontWeight('bold')
-      .setBackground('#1a3a5c').setFontColor('white');
-    sh.setFrozenRows(1);
-  }
-  return sh;
+function renderAttendees(list, cid) {
+  var c = document.getElementById(cid); c.innerHTML = '';
+  list.forEach(function(p, i) {
+    var d = document.createElement('div'); d.className = 'attendee'; d.id = cid + i;
+    d.innerHTML = '<div style="flex:1">'
+      + '<div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">'
+      + '<span class="attendee-name">' + p.nombre + '</span>'
+      + (p.calidad === 'Titular'  ? '<span class="badge-titular">Titular</span>'   : '')
+      + (p.calidad === 'Suplente' ? '<span class="badge-suplente">Suplente</span>' : '')
+      + (p.cargoCPHS ? '<span class="badge-cargo">' + p.cargoCPHS + '</span>' : '')
+      + '</div>'
+      + '<div class="attendee-role">' + p.cargo + '</div>'
+      + '</div>'
+      + '<div class="check-group">'
+      + '<label><input type="radio" name="' + cid + i + '" value="Presente" onchange="markAttendee(\'' + cid + i + '\',\'present\')"> Pres.</label>'
+      + '<label><input type="radio" name="' + cid + i + '" value="Ausente"  onchange="markAttendee(\'' + cid + i + '\',\'absent\')">  Ause.</label>'
+      + '</div>';
+    c.appendChild(d);
+  });
 }
+
+function markAttendee(id, cls) { document.getElementById(id).className = 'attendee ' + cls; }
+
+function addAttendee(g) {
+  var n = prompt('Nombre:'); if (!n) return;
+  var c = prompt('Cargo:') || '';
+  (g==='empresa'?empresa:trabajadores).push({nombre:n,cargo:c,calidad:'',cargoCPHS:'',mail:''});
+  renderAttendees(g==='empresa'?empresa:trabajadores, g+'-list');
+}
+
+function getAsistencia() {
+  var r = [];
+  ['empresa','trabajadores'].forEach(function(g) {
+    (g==='empresa'?empresa:trabajadores).forEach(function(p,i){
+      var s = document.querySelector('input[name="'+g+'-list'+i+'"]:checked');
+      r.push({grupo:g,nombre:p.nombre,cargo:p.cargo,estado:s?s.value:'Sin registrar'});
+    });
+  });
+  return r;
+}
+
+function addPlan(data) {
+  planCount++;
+  var tbody = document.getElementById('planes-body');
+  var tr = document.createElement('tr');
+  tr.innerHTML = '<td style="color:#888;font-size:12px">'+planCount+'</td>'
+    +'<td><input type="text" value="'+(data&&data.descripcion?data.descripcion:'')+'" placeholder="Descripción..."></td>'
+    +'<td><input type="text" value="'+(data&&data.responsable?data.responsable:'')+'" placeholder="Responsable"></td>'
+    +'<td><input type="email" value="'+(data&&data.correo?data.correo:'')+'" placeholder="correo@empresa.cl"></td>'
+    +'<td><input type="date" value="'+(data&&data.fechaTermino?data.fechaTermino:'')+'"></td>'
+    +'<td><select onchange="colorSelect(this)">'+['Pendiente','En proceso','Cerrado','Vencido'].map(function(s){return '<option'+(data&&data.estado===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select></td>'
+    +'<td><button class="del-btn" onclick="this.closest(\'tr\').remove()">&#10005;</button></td>';
+  tbody.appendChild(tr);
+  colorSelect(tr.querySelector('select'));
+}
+
+function colorSelect(sel) {
+  var v = sel.value;
+  sel.style.background = v==='Cerrado'?'#d7fab6':v==='Vencido'?'#ffe6e8':v==='En proceso'?'#e0f4f7':'#fff';
+  sel.style.color      = v==='Cerrado'?'#2d6a2d':v==='Vencido'?'#FA345E':v==='En proceso'?'#146787':'#888';
+  sel.style.fontWeight = '600';
+}
+
+function getPlanes() {
+  return Array.from(document.querySelectorAll('#planes-body tr')).map(function(tr){
+    var i=tr.querySelectorAll('input,select');
+    return {descripcion:i[0].value,responsable:i[1].value,correo:i[2].value,fechaTermino:i[3].value,estado:i[4].value};
+  });
+}
+
+function addInspeccion(data) {
+  inspCount++;
+  var tbody = document.getElementById('inspeccion-body');
+  var tr = document.createElement('tr');
+  tr.innerHTML = '<td style="color:#888;font-size:12px">'+inspCount+'</td>'
+    +'<td><input type="text" value="'+(data&&data.area?data.area:'')+'" placeholder="Área"></td>'
+    +'<td><input type="text" value="'+(data&&data.condicion?data.condicion:'')+'" placeholder="Descripción..."></td>'
+    +'<td><select>'+['Alto','Medio','Bajo'].map(function(r){return '<option'+(data&&data.riesgo===r?' selected':'')+'>'+r+'</option>';}).join('')+'</select></td>'
+    +'<td><input type="text" value="'+(data&&data.responsable?data.responsable:'')+'" placeholder="Responsable"></td>'
+    +'<td><input type="date" value="'+(data&&data.plazo?data.plazo:'')+'"></td>'
+    +'<td><select>'+['Pendiente','En proceso','Resuelto'].map(function(s){return '<option'+(data&&data.estado===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select></td>'
+    +'<td><button class="del-btn" onclick="this.closest(\'tr\').remove()">&#10005;</button></td>';
+  tbody.appendChild(tr);
+}
+
+function getInspecciones() {
+  return Array.from(document.querySelectorAll('#inspeccion-body tr')).map(function(tr){
+    var i=tr.querySelectorAll('input,select');
+    return {area:i[0].value,condicion:i[1].value,riesgo:i[2].value,responsable:i[3].value,plazo:i[4].value,estado:i[5].value};
+  });
+}
+
+function renderCursos() {
+  var c = document.getElementById('cursos-container'); c.innerHTML='';
+  cursosBase.forEach(function(nombre){
+    var div=document.createElement('div'); div.className='curso-card';
+    div.innerHTML='<div class="curso-header"><strong>'+nombre+'</strong>'
+      +'<button class="del-btn" onclick="this.closest(\'.curso-card\').remove()">&#10005;</button></div>'
+      +'<div class="curso-body"><div class="curso-grid">'
+      +'<div><label class="field-label">Personal obligado</label><input type="text" placeholder="Ej: Todo el personal"></div>'
+      +'<div><label class="field-label">Estado</label><select><option>Pendiente</option><option>Programado</option><option>Cumplido</option></select></div>'
+      +'<div><label class="field-label">Fecha programada</label><input type="date"></div>'
+      +'<div><label class="field-label">N° participantes</label><input type="number" placeholder="0" min="0"></div>'
+      +'</div><label class="field-label" style="margin-top:4px">Observaciones</label><input type="text" placeholder="Relator, sala, pendientes..."></div>';
+    c.appendChild(div);
+  });
+}
+
+function addCurso() {
+  var n=prompt('Nombre del curso:'); if(!n) return;
+  cursosBase.push(n); renderCursos();
+}
+
+function getCursos() {
+  return Array.from(document.querySelectorAll('#cursos-container .curso-card')).map(function(card){
+    var i=card.querySelectorAll('input,select');
+    return {nombre:card.querySelector('strong').textContent,personal:i[0].value,estado:i[1].value,fechaProgramada:i[2].value,nParticipantes:i[3].value,obs:i[4].value};
+  });
+}
+
+function addRedefinido() {
+  var tr=document.createElement('tr');
+  tr.innerHTML='<td><input type="text" placeholder="Plan original"></td>'
+    +'<td><input type="text" placeholder="Motivo del atraso"></td>'
+    +'<td><input type="text" placeholder="Responsable"></td>'
+    +'<td><input type="date"></td>'
+    +'<td><button class="del-btn" onclick="this.closest(\'tr\').remove()">&#10005;</button></td>';
+  document.getElementById('redefinidos-body').appendChild(tr);
+}
+
+function addNuevo() {
+  var tr=document.createElement('tr');
+  tr.innerHTML='<td><input type="text" placeholder="Descripción"></td>'
+    +'<td><input type="text" placeholder="Responsable"></td>'
+    +'<td><input type="email" placeholder="correo@empresa.cl"></td>'
+    +'<td><input type="date"></td>'
+    +'<td><button class="del-btn" onclick="this.closest(\'tr\').remove()">&#10005;</button></td>';
+  document.getElementById('nuevos-body').appendChild(tr);
+}
+
+function getRedefinidos() {
+  return Array.from(document.querySelectorAll('#redefinidos-body tr')).map(function(tr){
+    var i=tr.querySelectorAll('input');
+    return {descripcion:i[0].value,motivo:i[1].value,responsable:i[2].value,nuevaFecha:i[3].value};
+  });
+}
+
+function getNuevos() {
+  return Array.from(document.querySelectorAll('#nuevos-body tr')).map(function(tr){
+    var i=tr.querySelectorAll('input');
+    return {descripcion:i[0].value,responsable:i[1].value,correo:i[2].value,fechaTermino:i[3].value};
+  });
+}
+
+function cargarPendientes() {
+  showToast('Cargando pendientes...','info');
+  jsonp(SCRIPT_URL + '?action=cargarPendientes', function(json) {
+    if (!json || !json.ok) { showToast('Error al cargar pendientes','error'); return; }
+    var d = json.data;
+    if (d.planes && d.planes.length) {
+      document.getElementById('planes-body').innerHTML = ''; planCount = 0;
+      d.planes.forEach(function(p){ addPlan(p); });
+      var b = document.getElementById('planes-badge'); b.textContent = d.planes.length + ' pendientes'; b.style.display = 'inline';
+    }
+    if (d.inspecciones && d.inspecciones.length) {
+      document.getElementById('inspeccion-body').innerHTML = ''; inspCount = 0;
+      d.inspecciones.forEach(function(i){ addInspeccion(i); });
+      var b2 = document.getElementById('insp-badge'); b2.textContent = d.inspecciones.length + ' pendientes'; b2.style.display = 'inline';
+    }
+    if (d.ultimaReunion) {
+      document.getElementById('numActaAnterior').value = d.ultimaReunion.num || '';
+      if (d.ultimaReunion.fecha) { var f = new Date(d.ultimaReunion.fecha); if (!isNaN(f)) document.getElementById('fechaActaAnterior').valueAsDate = f; }
+    }
+    showToast('Cargados: ' + (d.planes?d.planes.length:0) + ' planes y ' + (d.inspecciones?d.inspecciones.length:0) + ' inspecciones', 'success');
+  });
+}
+
+async function guardarReunion() {
+  var btn=document.getElementById('btnGuardar');
+  btn.disabled=true; btn.textContent='Guardando...';
+  var payload={
+    fecha:document.getElementById('fechaReunion').value,
+    numReunion:document.getElementById('numReunion').value,
+    hora:document.getElementById('horaReunion').value,
+    lugar:document.getElementById('lugarReunion').value,
+    numActaAnterior:document.getElementById('numActaAnterior').value,
+    fechaActaAnterior:document.getElementById('fechaActaAnterior').value,
+    resumenActa:document.getElementById('actaTexto').value,
+    observaciones:document.getElementById('observaciones').value,
+    asistencia:getAsistencia(),planes:getPlanes(),inspecciones:getInspecciones(),
+    cursos:getCursos(),redefinidos:getRedefinidos(),nuevosPlanes:getNuevos()
+  };
+  try {
+    var res=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({action:'guardarReunion',payload:payload})});
+    var json=await res.json();
+    if(json.ok){showToast('¡Reunión guardada! Acta enviada por correo. ID: '+json.reunionId,'success');}
+    else throw new Error(json.msg||'Error');
+  } catch(e){showToast('Error: '+e.message,'error');}
+  finally{btn.disabled=false;btn.textContent='Guardar en Google Sheets';}
+}
+
+function exportarPDF() {
+  var s=document.createElement('style'); s.id='pdf-print';
+  s.textContent='@media print{.footer,.add-btn,.del-btn,.toggle-icon,.meta-row button{display:none!important}.section-body.collapsed{display:block!important}body{background:white!important;padding:0}.container{box-shadow:none!important;border-radius:0}}';
+  document.head.appendChild(s);
+  window.print();
+  setTimeout(function(){var el=document.getElementById('pdf-print');if(el)el.remove();},1500);
+}
+
+function toggleSection(id) {
+  var b=document.getElementById(id),ic=document.getElementById('icon-'+id);
+  b.classList.toggle('collapsed');
+  ic.textContent=b.classList.contains('collapsed')?'▼':'▲';
+}
+
+function switchTab(tab,el) {
+  document.getElementById('tab-redefinidos').style.display=tab==='redefinidos'?'block':'none';
+  document.getElementById('tab-nuevos').style.display=tab==='nuevos'?'block':'none';
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  el.classList.add('active');
+}
+
+function showToast(msg,type) {
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast show '+(type||'');
+  setTimeout(function(){t.className='toast';},3500);
+}
+</script>
+</body>
+</html>
