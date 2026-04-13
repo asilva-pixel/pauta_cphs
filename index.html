@@ -314,7 +314,7 @@ textarea { min-height: 80px; resize: vertical; }
 
 <script>
 // ─── REEMPLAZA CON TU URL ──────────────────────────────────
-var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzrb73E-GNutnnf0v496jduwmX-p5WAot7Rv2AqG9n-PmFKmIxUtnjL2lrYUWhG-0wK9A/exec';
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzDb7KzrNqDRjwixpoDTy5k79Nu5ICSvv5WGUXS9EIEWML51EZjGGB50nwXR1Sqcm2MeQ/exec';
 // ──────────────────────────────────────────────────────────
 
 var empresa = [], trabajadores = [];
@@ -394,7 +394,32 @@ function renderAttendees(list, cid) {
 
 function markAttendee(id, cls) { document.getElementById(id).className = 'attendee ' + cls; }
 
-function addAttendee(g) {
+function addInvitado() {
+  var n = prompt('Nombre del invitado:'); if (!n) return;
+  var c = prompt('Empresa / Cargo:') || '';
+  var container = document.getElementById('invitados-list');
+  var div = document.createElement('div');
+  div.className = 'attendee present';
+  div.style.background = '#f3f1fd';
+  div.style.borderColor = '#e8e6f7';
+  div.innerHTML = '<div style="flex:1">'
+    + '<div class="attendee-name">' + n + '</div>'
+    + '<div class="attendee-role">' + c + '</div>'
+    + '</div>'
+    + '<button class="del-btn" onclick="this.closest(\'.attendee\').remove()">&#10005;</button>';
+  container.appendChild(div);
+}
+
+function getInvitados() {
+  return Array.from(document.querySelectorAll('#invitados-list .attendee')).map(function(d) {
+    return {
+      nombre: d.querySelector('.attendee-name').textContent,
+      cargo:  d.querySelector('.attendee-role').textContent,
+      grupo:  'invitado',
+      estado: 'Presente'
+    };
+  });
+}
   var n = prompt('Nombre:'); if (!n) return;
   var c = prompt('Cargo:') || '';
   (g==='empresa'?empresa:trabajadores).push({nombre:n,cargo:c,calidad:'',cargoCPHS:'',mail:''});
