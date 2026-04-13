@@ -668,9 +668,13 @@ function guardarReunion() {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
-  }).then(function(res) { return res.json(); })
-  .then(function() { showToast('¡Reunión guardada correctamente!', 'success'); })
-  .catch(function(e) { showToast('Error al guardar: ' + e.message, 'error'); })
+  }).then(function(res) {
+    if (res.ok) {
+      showToast('¡Reunión guardada correctamente!', 'success');
+    } else {
+      showToast('Error al guardar (código ' + res.status + ')', 'error');
+    }
+  }).catch(function(e) { showToast('Error al guardar: ' + e.message, 'error'); })
   .finally(function() { btn.disabled = false; btn.textContent = 'Guardar en Google Sheets'; });
 }
 
