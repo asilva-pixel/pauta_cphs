@@ -394,32 +394,7 @@ function renderAttendees(list, cid) {
 
 function markAttendee(id, cls) { document.getElementById(id).className = 'attendee ' + cls; }
 
-function addInvitado() {
-  var n = prompt('Nombre del invitado:'); if (!n) return;
-  var c = prompt('Empresa / Cargo:') || '';
-  var container = document.getElementById('invitados-list');
-  var div = document.createElement('div');
-  div.className = 'attendee present';
-  div.style.background = '#f3f1fd';
-  div.style.borderColor = '#e8e6f7';
-  div.innerHTML = '<div style="flex:1">'
-    + '<div class="attendee-name">' + n + '</div>'
-    + '<div class="attendee-role">' + c + '</div>'
-    + '</div>'
-    + '<button class="del-btn" onclick="this.closest(\'.attendee\').remove()">&#10005;</button>';
-  container.appendChild(div);
-}
 
-function getInvitados() {
-  return Array.from(document.querySelectorAll('#invitados-list .attendee')).map(function(d) {
-    return {
-      nombre: d.querySelector('.attendee-name').textContent,
-      cargo:  d.querySelector('.attendee-role').textContent,
-      grupo:  'invitado',
-      estado: 'Presente'
-    };
-  });
-}
   var n = prompt('Nombre:'); if (!n) return;
   var c = prompt('Cargo:') || '';
   (g==='empresa'?empresa:trabajadores).push({nombre:n,cargo:c,calidad:'',cargoCPHS:'',mail:''});
