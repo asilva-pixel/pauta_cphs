@@ -9,38 +9,24 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Montserrat', sans-serif; background: #f4f4f6; color: #1B1B1B; line-height: 1.6; padding: 20px; }
 .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); overflow: hidden; }
-
-/* HEADER */
 .header { background: linear-gradient(135deg, #FA345E 0%, #B2A8E7 100%); color: white; padding: 40px 30px; text-align: center; }
 .header h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
 .header p { font-size: 13px; opacity: 0.9; }
 .meta-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 18px; }
 .meta-row input { background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.4); color: white; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-family: 'Montserrat', sans-serif; }
 .meta-row input::placeholder { color: rgba(255,255,255,0.65); }
-.meta-row button { background: rgba(255,255,255,0.22); border: 1px solid rgba(255,255,255,0.45); color: white; padding: 6px 16px; border-radius: 8px; font-size: 13px; font-family: 'Montserrat', sans-serif; cursor: pointer; font-weight: 600; transition: background 0.2s; }
+.meta-row button { background: rgba(255,255,255,0.22); border: 1px solid rgba(255,255,255,0.45); color: white; padding: 6px 16px; border-radius: 8px; font-size: 13px; font-family: 'Montserrat', sans-serif; cursor: pointer; font-weight: 600; }
 .meta-row button:hover { background: rgba(255,255,255,0.32); }
-
-/* FORM */
 .form-content { padding: 10px 30px 30px; }
-
-/* SECTIONS */
 .section { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid #eee; }
 .section:last-child { border-bottom: none; }
 .section-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; margin-bottom: 14px; padding: 10px 14px; border-radius: 10px; transition: background 0.2s; }
 .section-header:hover { background: #fdf0f3; }
 .section-title { font-size: 16px; font-weight: 700; color: #1B1B1B; display: flex; align-items: center; gap: 10px; }
 .num { width: 32px; height: 32px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; color: white; }
-.n1 { background: #FA345E; }
-.n2 { background: #146787; }
-.n3 { background: #45C1AD; }
-.n4 { background: #B2A8E7; }
-.n5 { background: #FA345E; }
-.n6 { background: #146787; }
-.nc { background: #999; }
+.n1{background:#FA345E} .n2{background:#146787} .n3{background:#45C1AD} .n4{background:#B2A8E7} .n5{background:#FA345E} .n6{background:#146787} .nc{background:#999}
 .toggle-icon { color: #999; font-size: 12px; }
 .section-body.collapsed { display: none; }
-
-/* ATTENDANCE */
 .attendance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .att-group h3 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; padding-bottom: 6px; }
 .att-empresa h3 { color: #146787; border-bottom: 2px solid #c5e8f0; }
@@ -56,8 +42,6 @@ body { font-family: 'Montserrat', sans-serif; background: #f4f4f6; color: #1B1B1
 .badge-titular  { font-size: 10px; font-weight: 700; color: #146787; border: 1px solid #146787; border-radius: 4px; padding: 1px 6px; }
 .badge-suplente { font-size: 10px; font-weight: 700; color: #888; border: 1px solid #ccc; border-radius: 4px; padding: 1px 6px; }
 .badge-cargo    { font-size: 10px; font-weight: 700; color: white; background: #FA345E; border-radius: 4px; padding: 1px 6px; }
-
-/* INPUTS */
 input[type="text"], input[type="date"], input[type="email"], input[type="number"], input[type="time"], select, textarea {
   width: 100%; padding: 9px 13px; border: 1.5px solid #e0e0e0; border-radius: 8px;
   font-family: 'Montserrat', sans-serif; font-size: 13px; transition: all 0.2s; background: white; color: #1B1B1B;
@@ -67,8 +51,6 @@ textarea { min-height: 80px; resize: vertical; }
 .field-label { font-size: 11px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 5px; }
 .add-btn { margin-top: 8px; font-size: 12px; padding: 6px 14px; background: white; border: 1.5px dashed #B2A8E7; color: #7B6FD4; border-radius: 8px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-weight: 600; transition: background 0.2s; }
 .add-btn:hover { background: #f3f1fd; }
-
-/* TABLES */
 .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
 .data-table thead tr { background: #f0f7fa; }
 .data-table th { font-size: 11px; font-weight: 700; color: #146787; text-transform: uppercase; letter-spacing: 0.5px; padding: 9px 10px; text-align: left; border-bottom: 2px solid #c5e8f0; }
@@ -77,46 +59,30 @@ textarea { min-height: 80px; resize: vertical; }
 .data-table input, .data-table select { border: 1px solid #e0e0e0; padding: 4px 7px; font-size: 12px; border-radius: 6px; }
 .del-btn { background: none; border: none; color: #FA345E; cursor: pointer; font-size: 14px; padding: 2px 5px; opacity: 0.6; }
 .del-btn:hover { opacity: 1; }
-
-/* BADGES */
 .pendiente-badge { background: #fff0f3; color: #FA345E; font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 700; margin-left: 8px; border: 1px solid #ffd6df; }
-
-/* CURSOS */
 .curso-card { border: 1px solid #e8e6f7; border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
 .curso-header { background: #f3f1fd; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e8e6f7; }
 .curso-header strong { font-size: 13px; color: #7B6FD4; font-weight: 600; }
 .curso-body { padding: 12px 16px; }
-.curso-body .field-label { color: #888; }
 .curso-body input, .curso-body select { margin-bottom: 10px; font-size: 12px; padding: 6px 10px; }
 .curso-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
-/* TABS */
 .asuntos-tabs { display: flex; margin-bottom: 16px; border-bottom: 2px solid #e8e6f7; }
 .tab { padding: 7px 18px; font-size: 13px; cursor: pointer; border: none; border-radius: 8px 8px 0 0; color: #888; font-weight: 600; font-family: 'Montserrat', sans-serif; background: none; transition: all 0.2s; margin-right: 4px; }
 .tab:hover { color: #7B6FD4; background: #f3f1fd; }
 .tab.active { background: linear-gradient(135deg,#B2A8E7,#7B6FD4); color: white; }
-
-/* NOTE */
 .reminder-note { font-size: 12px; color: #146787; background: #f0f7fa; border-left: 3px solid #45C1AD; padding: 8px 12px; border-radius: 0 8px 8px 0; margin-bottom: 12px; font-style: italic; }
-
-/* CIERRE */
 .cierre-box { background: linear-gradient(135deg, #f0f7fa, #f3f1fd); border-radius: 10px; padding: 18px 20px; font-size: 13px; line-height: 1.9; color: #444; border: 1px solid #e8e6f7; }
-
-/* FOOTER */
 .footer { background: #fafafa; padding: 18px 30px; display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; align-items: center; border-top: 1px solid #eee; }
 .btn-primary { background: linear-gradient(135deg,#FA345E,#ff5a7a); color: white; border: none; padding: 11px 26px; border-radius: 30px; font-size: 14px; font-family: 'Montserrat', sans-serif; cursor: pointer; font-weight: 700; box-shadow: 0 4px 14px rgba(250,52,94,0.25); transition: all 0.25s; }
 .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(250,52,94,0.35); }
 .btn-primary:disabled { background: #ccc; box-shadow: none; transform: none; cursor: not-allowed; }
 .btn-secondary { background: white; color: #146787; border: 1.5px solid #146787; padding: 10px 22px; border-radius: 30px; font-size: 14px; font-family: 'Montserrat', sans-serif; cursor: pointer; font-weight: 600; transition: all 0.2s; }
 .btn-secondary:hover { background: #f0f7fa; }
-
-/* TOAST */
 .toast { position: fixed; bottom: 24px; right: 24px; padding: 12px 20px; border-radius: 10px; font-size: 13px; font-weight: 600; z-index: 999; opacity: 0; transition: opacity 0.3s; pointer-events: none; font-family: 'Montserrat', sans-serif; }
 .toast.show { opacity: 1; }
 .toast.success { background: #d7fab6; color: #2d6a2d; border: 1px solid #97E89F; }
 .toast.error   { background: #ffe6e8; color: #721c24; border: 1px solid #FA345E; }
 .toast.info    { background: #e0f4f7; color: #146787; border: 1px solid #45C1AD; }
-
 @media print {
   .footer, .add-btn, .del-btn, .toggle-icon, .meta-row button { display: none !important; }
   .section-body.collapsed { display: block !important; }
@@ -179,7 +145,7 @@ textarea { min-height: 80px; resize: vertical; }
           <div style="flex:1;min-width:160px"><label class="field-label">Fecha acta anterior</label><input type="date" id="fechaActaAnterior"></div>
         </div>
         <label class="field-label">Resumen puntos tratados</label>
-        <textarea id="actaTexto" placeholder="Resumen de los puntos abordados en la reuni&#243;n anterior y estado de sus compromisos..."></textarea>
+        <textarea id="actaTexto" placeholder="Resumen de los puntos abordados en la reuni&#243;n anterior..."></textarea>
       </div>
     </div>
 
@@ -313,9 +279,7 @@ textarea { min-height: 80px; resize: vertical; }
 <div class="toast" id="toast"></div>
 
 <script>
-// ─── REEMPLAZA CON TU URL ──────────────────────────────────
 var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzDb7KzrNqDRjwixpoDTy5k79Nu5ICSvv5WGUXS9EIEWML51EZjGGB50nwXR1Sqcm2MeQ/exec';
-// ──────────────────────────────────────────────────────────
 
 var empresa = [], trabajadores = [];
 var cursosBase = [
@@ -338,7 +302,8 @@ function jsonp(url, callback) {
   var name = 'cb_' + Date.now();
   window[name] = function(data) {
     delete window[name];
-    document.getElementById('jsonp-script') && document.getElementById('jsonp-script').remove();
+    var s = document.getElementById('jsonp-script');
+    if (s) s.remove();
     callback(data);
   };
   var s = document.createElement('script');
@@ -394,7 +359,7 @@ function renderAttendees(list, cid) {
 
 function markAttendee(id, cls) { document.getElementById(id).className = 'attendee ' + cls; }
 
-
+function addAttendee(g) {
   var n = prompt('Nombre:'); if (!n) return;
   var c = prompt('Cargo:') || '';
   (g==='empresa'?empresa:trabajadores).push({nombre:n,cargo:c,calidad:'',cargoCPHS:'',mail:''});
@@ -544,59 +509,63 @@ function cargarPendientes() {
       document.getElementById('numActaAnterior').value = d.ultimaReunion.num || '';
       if (d.ultimaReunion.fecha) { var f = new Date(d.ultimaReunion.fecha); if (!isNaN(f)) document.getElementById('fechaActaAnterior').valueAsDate = f; }
     }
-    showToast('Cargados: ' + (d.planes?d.planes.length:0) + ' planes y ' + (d.inspecciones?d.inspecciones.length:0) + ' inspecciones', 'success');
+    showToast('Cargados: '+(d.planes?d.planes.length:0)+' planes y '+(d.inspecciones?d.inspecciones.length:0)+' inspecciones','success');
   });
 }
 
 async function guardarReunion() {
-  var btn=document.getElementById('btnGuardar');
-  btn.disabled=true; btn.textContent='Guardando...';
-  var payload={
-    fecha:document.getElementById('fechaReunion').value,
-    numReunion:document.getElementById('numReunion').value,
-    hora:document.getElementById('horaReunion').value,
-    lugar:document.getElementById('lugarReunion').value,
-    numActaAnterior:document.getElementById('numActaAnterior').value,
+  var btn = document.getElementById('btnGuardar');
+  btn.disabled = true; btn.textContent = 'Guardando...';
+  var payload = {
+    fecha:            document.getElementById('fechaReunion').value,
+    numReunion:       document.getElementById('numReunion').value,
+    hora:             document.getElementById('horaReunion').value,
+    lugar:            document.getElementById('lugarReunion').value,
+    numActaAnterior:  document.getElementById('numActaAnterior').value,
     fechaActaAnterior:document.getElementById('fechaActaAnterior').value,
-    resumenActa:document.getElementById('actaTexto').value,
-    observaciones:document.getElementById('observaciones').value,
-    asistencia:getAsistencia(),planes:getPlanes(),inspecciones:getInspecciones(),
-    cursos:getCursos(),redefinidos:getRedefinidos(),nuevosPlanes:getNuevos()
+    resumenActa:      document.getElementById('actaTexto').value,
+    observaciones:    document.getElementById('observaciones').value,
+    asistencia:       getAsistencia(),
+    planes:           getPlanes(),
+    inspecciones:     getInspecciones(),
+    cursos:           getCursos(),
+    redefinidos:      getRedefinidos(),
+    nuevosPlanes:     getNuevos()
   };
   try {
-    var res=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({action:'guardarReunion',payload:payload})});
-    var json=await res.json();
-    if(json.ok){showToast('¡Reunión guardada! Acta enviada por correo. ID: '+json.reunionId,'success');}
-    else throw new Error(json.msg||'Error');
-  } catch(e){showToast('Error: '+e.message,'error');}
-  finally{btn.disabled=false;btn.textContent='Guardar en Google Sheets';}
+    var res = await fetch(SCRIPT_URL, {method:'POST', body: JSON.stringify({action:'guardarReunion', payload:payload})});
+    var json = await res.json();
+    if (json.ok) { showToast('¡Reunión guardada! Acta enviada por correo. ID: ' + json.reunionId, 'success'); }
+    else throw new Error(json.msg || 'Error');
+  } catch(e) { showToast('Error: ' + e.message, 'error'); }
+  finally { btn.disabled = false; btn.textContent = 'Guardar en Google Sheets'; }
 }
 
 function exportarPDF() {
-  var s=document.createElement('style'); s.id='pdf-print';
-  s.textContent='@media print{.footer,.add-btn,.del-btn,.toggle-icon,.meta-row button{display:none!important}.section-body.collapsed{display:block!important}body{background:white!important;padding:0}.container{box-shadow:none!important;border-radius:0}}';
+  var s = document.createElement('style'); s.id = 'pdf-print';
+  s.textContent = '@media print{.footer,.add-btn,.del-btn,.toggle-icon,.meta-row button{display:none!important}.section-body.collapsed{display:block!important}body{background:white!important;padding:0}.container{box-shadow:none!important;border-radius:0}}';
   document.head.appendChild(s);
   window.print();
-  setTimeout(function(){var el=document.getElementById('pdf-print');if(el)el.remove();},1500);
+  setTimeout(function(){ var el = document.getElementById('pdf-print'); if(el) el.remove(); }, 1500);
 }
 
 function toggleSection(id) {
-  var b=document.getElementById(id),ic=document.getElementById('icon-'+id);
+  var b = document.getElementById(id), ic = document.getElementById('icon-' + id);
   b.classList.toggle('collapsed');
-  ic.textContent=b.classList.contains('collapsed')?'▼':'▲';
+  ic.textContent = b.classList.contains('collapsed') ? '▼' : '▲';
 }
 
-function switchTab(tab,el) {
-  document.getElementById('tab-redefinidos').style.display=tab==='redefinidos'?'block':'none';
-  document.getElementById('tab-nuevos').style.display=tab==='nuevos'?'block':'none';
-  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+function switchTab(tab, el) {
+  document.getElementById('tab-redefinidos').style.display = tab==='redefinidos' ? 'block' : 'none';
+  document.getElementById('tab-nuevos').style.display      = tab==='nuevos'      ? 'block' : 'none';
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
   el.classList.add('active');
 }
 
-function showToast(msg,type) {
-  var t=document.getElementById('toast');
-  t.textContent=msg; t.className='toast show '+(type||'');
-  setTimeout(function(){t.className='toast';},3500);
+function showToast(msg, type) {
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast show ' + (type||'');
+  setTimeout(function(){ t.className = 'toast'; }, 3500);
 }
 </script>
 </body>
