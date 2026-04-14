@@ -686,15 +686,44 @@ function llenarPrueba() {
   document.getElementById('numActaAnterior').value = '000';
   document.getElementById('actaTexto').value = 'Reunión de constitución del comité.';
   document.getElementById('observaciones').value = 'Prueba de sistema.';
+
+  // Asistencia
   empresa.forEach(function(_,i){ var r=document.querySelector('input[name="empresa-list'+i+'"][value="Presente"]'); if(r){r.checked=true;markAttendee('empresa-list'+i,'present');}});
   trabajadores.forEach(function(_,i){ var r=document.querySelector('input[name="trabajadores-list'+i+'"][value="Presente"]'); if(r){r.checked=true;markAttendee('trabajadores-list'+i,'present');}});
-  document.getElementById('temas-list').innerHTML = '';
-  var div = document.createElement('div'); div.style.cssText='border:1px solid #e8e6f7;border-radius:10px;margin-bottom:12px;overflow:hidden';
-  div.innerHTML='<div style="background:#f0f7fa;padding:9px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e8e6f7"><span style="font-size:13px;font-weight:700;color:#146787">1. Tema de prueba</span><button class="del-btn" onclick="this.closest(\'div[style]\').remove()">&#10005;</button></div><div style="padding:10px 14px"><textarea style="min-height:70px;font-size:13px">Contenido del tema de prueba.</textarea></div>';
-  document.getElementById('temas-list').appendChild(div);
-  document.getElementById('planes-body').innerHTML = ''; planCount = 0;
-  addPlan({descripcion:'Plan de prueba',responsable:'Ana Maria Silva',correo:'asilva@apprecio.com',fechaTermino:'2026-05-30',estado:'Pendiente'});
-  showToast('Datos de prueba cargados','success');
+
+  // Invitado de prueba
+  document.getElementById('invitados-list').innerHTML='';
+  var divInv=document.createElement('div'); divInv.className='attendee'; divInv.style.background='#f3f1fd'; divInv.style.borderColor='#e8e6f7';
+  divInv.innerHTML='<div style="flex:1"><div class="attendee-name">Invitado de Prueba</div><div class="attendee-role"><span style="color:#7B6FD4;font-weight:600">Empresa/Cargo:</span> Empresa Externa</div></div><button class="del-btn" onclick="this.closest(\'.attendee\').remove()">&#10005;</button>';
+  document.getElementById('invitados-list').appendChild(divInv);
+
+  // Temas
+  document.getElementById('temas-list').innerHTML='';
+  ['Revisión política de seguridad','Análisis accidentes del trimestre'].forEach(function(t, idx) {
+    var div=document.createElement('div'); div.style.cssText='border:1px solid #e8e6f7;border-radius:10px;margin-bottom:12px;overflow:hidden';
+    div.innerHTML='<div style="background:#f0f7fa;padding:9px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e8e6f7"><span style="font-size:13px;font-weight:700;color:#146787">'+(idx+1)+'. '+t+'</span><button class="del-btn" onclick="this.closest(\'div[style]\').remove()">&#10005;</button></div><div style="padding:10px 14px"><textarea style="min-height:70px;font-size:13px">Contenido de prueba para el tema '+(idx+1)+'.</textarea></div>';
+    document.getElementById('temas-list').appendChild(div);
+  });
+
+  // Planes
+  document.getElementById('planes-body').innerHTML=''; planCount=0;
+  addPlan({descripcion:'Actualizar reglamento interno de seguridad',responsable:'Ana Maria Silva',correo:'asilva@apprecio.com',fechaTermino:'2026-05-30',estado:'Pendiente'});
+  addPlan({descripcion:'Instalar señalética de emergencia',responsable:'Juan Ignacio Ceballos',correo:'jceballos@apprecio.com',fechaTermino:'2026-04-30',estado:'En proceso'});
+
+  // Inspección
+  document.getElementById('inspeccion-body').innerHTML=''; inspCount=0;
+  addInspeccion({area:'Bodega',condicion:'Cables expuestos en panel eléctrico',riesgo:'Alto',responsable:'Marcela Pérez',plazo:'2026-04-20',estado:'Pendiente'});
+
+  // Nuevo plan en asuntos
+  document.getElementById('nuevos-body').innerHTML='';
+  addNuevo();
+  var lastTr = document.querySelector('#nuevos-body tr:last-child');
+  if (lastTr) {
+    lastTr.querySelectorAll('input')[0].value = 'Realizar simulacro de evacuación';
+    lastTr.querySelectorAll('input')[1].value = '2026-06-15';
+  }
+
+  showToast('Datos de prueba completos cargados','success');
 }
 
 // ── EXPORTAR PDF ──────────────────────────────────────────────
